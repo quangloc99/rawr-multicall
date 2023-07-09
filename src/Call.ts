@@ -5,6 +5,6 @@ export type Call = {
     data: Bytes;
 };
 
-function createCall(contractAddress: Bytes, data: Bytes): Call {
+export function createCall(contractAddress: Bytes, data: Bytes): Call {
     return { contractAddress, data };
 }

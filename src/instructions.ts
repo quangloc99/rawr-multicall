@@ -25,7 +25,7 @@ export function joinInstructions(...instructions: Instruction[]): Instruction {
 
 // https://www.evm.codes/
 
-export const PUSH0 = singleByteInstruction(0x60);
+export const PUSH0 = singleByteInstruction(0x5f);
 export const GAS = singleByteInstruction(0x5a);
 export const CODECOPY = singleByteInstruction(0x39);
 export const RETURNDATASIZE = singleByteInstruction(0x3d);
@@ -37,6 +37,7 @@ export const MSTORE8 = singleByteInstruction(0x53);
 export const ADD = singleByteInstruction(0x01);
 export const SUB = singleByteInstruction(0x03);
 export const RETURN = singleByteInstruction(0xf3);
+export const STOP = singleByteInstruction(0x00);
 
 export function VERBATIM(bytes: Bytes): Instruction {
     const byteSize = byteLength(bytes);
@@ -50,14 +51,17 @@ export function PUSH(byteSize: number, bytes: Bytes): Instruction {
     assert(1 <= byteSize && byteSize <= 32);
     return {
         byteSize: () => byteSize + 1,
-        generate: () => concat(byte(0x60 + byteSize), bytes),
+        generate: () => concat(byte(0x60 + byteSize - 1), bytes),
     };
 }
 
 export function PUSH_NUMBER(num: number): Instruction {
+    if (num == 0) return PUSH0;
     const bytes = toHex(num);
     const byteSize = byteLength(bytes);
-    return PUSH(byteSize, bytes);
+    console.log('PUSH_NUMBER', num, bytes, byteSize);
+    const res = PUSH(byteSize, bytes);
+    return res;
 }
 
 export const PUSH_ADDRESS = (address: Bytes) => PUSH(20, address);
@@ -88,7 +92,7 @@ export function PUSH_LABEL(
         byteSize: (context) => 1 + context.getLabelSize(),
         generate: (context) => {
             const labelSize = context.getLabelSize();
-            return concat(byte(0x60 + labelSize), toHex(context.getPos(labelName) + offset, labelSize));
+            return concat(byte(0x60 + labelSize - 1), toHex(context.getPos(labelName) + offset, labelSize));
         },
     };
 }

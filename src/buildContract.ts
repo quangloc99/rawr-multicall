@@ -1,5 +1,5 @@
 import { InstructionContext, PreprocessingInstructionContext } from './InstructionContext';
-import { Bytes, concat } from './bytes';
+import { Bytes, concat, add0x } from './bytes';
 import { assert, assertDefined } from './errors';
 import * as ins from './instructions';
 
@@ -19,6 +19,7 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
         addLabel(label: string) {
             assert(!labelPosition.has(label), `Duplicated label ${JSON.stringify(label)}`);
             labelPosition.set(label, totalSize);
+            console.log('added label', label, totalSize);
         },
     };
 
@@ -27,6 +28,7 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
         const insSize = instruction.byteSize(preprocessingInstructionContext);
         totalSize += insSize;
     }
+    console.log({ totalSize });
 
     const instructionContext: InstructionContext = {
         ...preprocessingInstructionContext,
@@ -45,5 +47,7 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
         res.push(instruction.generate(instructionContext));
     }
 
-    return concat(res);
+    console.log(res);
+
+    return add0x(concat(res));
 }

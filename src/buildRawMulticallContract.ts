@@ -3,7 +3,7 @@ import { Bytes, concat, byteLength } from './bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 
-export function buildMulticallContract(calls: Call[], params?: InstructionContextParams): Bytes {
+export function buildRawMulticallContract(calls: Call[], params?: InstructionContextParams): Bytes {
     const instructions = buildRawMulticallInstructions(calls);
     return buildContract(instructions, params);
 }
@@ -33,8 +33,8 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         // use CODECOPY as the data will be appended right after the creation code.
         instructions.push(
             ins.PUSH_NUMBER(curDataSize), // size
-            ins.PUSH_NUMBER(curDataOffset), // offset
-            ins.MLOAD_OFFSET(FREE_MEMORY_START),
+            ins.PUSH_LABEL('data-start', { offset: curDataOffset }), // offset
+            ins.DUP(3), // destOffset = free_memory_start
             ins.CODECOPY
         );
 
@@ -91,13 +91,14 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
     // return the result
     {
         // get the size
-        instructions.push(ins.PUSH_NUMBER(FREE_MEMORY_START), ins.SUB);
+        instructions.push(ins.PUSH_NUMBER(FREE_MEMORY_START), ins.SWAP(1), ins.SUB);
         // stack: [return_data_size]
         instructions.push(ins.PUSH_NUMBER(FREE_MEMORY_START));
         // stack: [return_data_size, start_of_return_data]
         instructions.push(ins.RETURN);
     }
 
+    instructions.push(ins.STOP);
     const data = concat(calls.map(({ data }) => data));
     instructions.push(ins.LABEL(LABELS.dataStart, { isEmpty: true }));
     instructions.push(ins.VERBATIM(data));
