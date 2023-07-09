@@ -1,10 +1,15 @@
-import { type Instruction } from './Instruction';
+import { type Instruction } from './instructions';
 
-export type InstructionContext = {
+export type PreprocessingInstructionContext = {
+    getLabelSize(): number;
+    addLabel(label: string): void;
+};
+
+export type InstructionContext = PreprocessingInstructionContext & {
     instructions: Instruction[];
     getTotalSize(): number;
-    getPos(instruction: Instruction): number;
+
     getPos(label: string): number;
-    addLabel(label: string): number;
-    getLabelSize(): number;
+    // might be useful in the future
+    // getPos(instruction: Instruction): number;
 };
