@@ -26,7 +26,13 @@
         "test": "yarn jest",
         "test:coverage": "yarn test --coverage",
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
-        "lint": "yarn lint:nofix --fix"
+        "lint": "yarn lint:nofix --fix",
+        "local-fork": "yarn hardhat node"
     },
-    "packageManager": "yarn@3.3.1"
+    "packageManager": "yarn@3.3.1",
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "hardhat": "^2.16.1",
+        "zod": "^3.21.4"
+    }
 }

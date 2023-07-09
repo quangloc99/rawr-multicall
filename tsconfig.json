@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": ["src/**/*", "test/**/*", "scripts/**/*"],
+    "include": ["src/**/*", "test/**/*", "scripts/**/*", "helpers/env.ts", "hardhat.config.ts"],
     "compilerOptions": {
         "outDir": "./dist",
         "rootDirs": ["./src", "./test", "./scripts"]
