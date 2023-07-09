@@ -1,9 +1,9 @@
 import { Call } from './Call';
-import { Bytes, concat, byteLength } from './bytes';
+import { concat, byteLength } from './bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 
-export function buildRawMulticallContract(calls: Call[], params?: InstructionContextParams): Bytes {
+export function buildRawMulticallContract(calls: Call[], params?: InstructionContextParams) {
     const instructions = buildRawMulticallInstructions(calls);
     return buildContract(instructions, params);
 }
