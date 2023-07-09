@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
         hardhat: {
             forking: {
                 url: RPC_URL[env.CHAIN_ID],
-                blockNumber: env.BLOCK_NUMBER,
+                blockNumber: 17657895,
             },
         },
     },

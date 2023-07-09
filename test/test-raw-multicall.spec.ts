@@ -19,12 +19,12 @@ describe('buildRawMulticallContract', () => {
         it('simple', async () => {
             const callData = iface.encodeFunctionData('balanceOf', [holder[0]]);
             const sendData = buildRawMulticallContract([createCall(pendle, callData)]);
-            console.log(callData);
-            console.log(sendData);
+            expect(callData).toMatchSnapshot();
+            expect(sendData).toMatchSnapshot();
             const res = await provider.call({
-                data: sendData,
+                data: sendData.byteCode,
             });
-            console.log(res);
+            expect(res).toMatchSnapshot();
         });
     });
 });

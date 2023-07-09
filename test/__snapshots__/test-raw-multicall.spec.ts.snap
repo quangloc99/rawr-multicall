@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildRawMulticallContract erc20 simple 1`] = `"0x70a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec"`;
+
+exports[`buildRawMulticallContract erc20 simple 2`] = `
+{
+  "byteCode": "0x60246200003c60803960a45f5f602460805f73808507121b80c02388fad14726482e061b8da8275af181536001013d5f823e3d0160a4900360a4f30070a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec",
+  "splittedByteCodes": [
+    "6024",
+    "6200003c",
+    "6080",
+    "39",
+    "60a4",
+    "5f",
+    "5f",
+    "6024",
+    "6080",
+    "5f",
+    "73808507121b80c02388fad14726482e061b8da827",
+    "5a",
+    "f1",
+    "81",
+    "53",
+    "6001",
+    "01",
+    "3d",
+    "5f",
+    "82",
+    "3e",
+    "3d",
+    "01",
+    "60a4",
+    "90",
+    "03",
+    "60a4",
+    "f3",
+    "00",
+    "",
+    "70a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec",
+  ],
+}
+`;
+
+exports[`buildRawMulticallContract erc20 simple 3`] = `"0x01000000000000000000000000000000000000000000110dad9ac2ff4020aa7336"`;
