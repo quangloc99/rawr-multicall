@@ -86,6 +86,18 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         // The stack state **should** be the same as the beginning of the cycle.
     }
 
+    // stack: [free_memory_start]
+
+    // return the result
+    {
+        // get the size
+        instructions.push(ins.PUSH_NUMBER(FREE_MEMORY_START), ins.SUB);
+        // stack: [return_data_size]
+        instructions.push(ins.PUSH_NUMBER(FREE_MEMORY_START));
+        // stack: [return_data_size, start_of_return_data]
+        instructions.push(ins.RETURN);
+    }
+
     const data = concat(calls.map(({ data }) => data));
     instructions.push(ins.LABEL(LABELS.dataStart, { isEmpty: true }));
     instructions.push(ins.VERBATIM(data));

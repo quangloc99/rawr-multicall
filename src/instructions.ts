@@ -35,6 +35,8 @@ export const MLOAD = singleByteInstruction(0x51);
 export const MSTORE = singleByteInstruction(0x52);
 export const MSTORE8 = singleByteInstruction(0x53);
 export const ADD = singleByteInstruction(0x01);
+export const SUB = singleByteInstruction(0x03);
+export const RETURN = singleByteInstruction(0xf3);
 
 export function VERBATIM(bytes: Bytes): Instruction {
     const byteSize = byteLength(bytes);
