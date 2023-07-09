@@ -59,7 +59,6 @@ export function PUSH_NUMBER(num: number): Instruction {
     if (num == 0) return PUSH0;
     const bytes = toHex(num);
     const byteSize = byteLength(bytes);
-    console.log('PUSH_NUMBER', num, bytes, byteSize);
     const res = PUSH(byteSize, bytes);
     return res;
 }

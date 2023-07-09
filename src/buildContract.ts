@@ -19,7 +19,6 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
         addLabel(label: string) {
             assert(!labelPosition.has(label), `Duplicated label ${JSON.stringify(label)}`);
             labelPosition.set(label, totalSize);
-            console.log('added label', label, totalSize);
         },
     };
 
@@ -28,7 +27,6 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
         const insSize = instruction.byteSize(preprocessingInstructionContext);
         totalSize += insSize;
     }
-    console.log({ totalSize });
 
     const instructionContext: InstructionContext = {
         ...preprocessingInstructionContext,
@@ -46,8 +44,6 @@ export function buildContract(instructions: ins.Instruction[], params?: Instruct
     for (const instruction of instructions) {
         res.push(instruction.generate(instructionContext));
     }
-
-    console.log(res);
 
     return add0x(concat(res));
 }
