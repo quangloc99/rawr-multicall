@@ -31,13 +31,17 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         ins.CODECOPY
     );
 
+    const LENGTH_SIZE = 4; // how many byte to store array length.
     const RETURN_DATA_START = FREE_MEMORY_START + totalDataSize;
+
+    // convenient constant(s)
+    instructions.push(ins.PUSH_NUMBER(LENGTH_SIZE));
 
     // manipulate this number on stack instead of loading right from memory
     instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START));
 
     // we maintain the end of the current return data
-    // stack: [return_data_end]
+    // stack: [length_size, return_data_end]
 
     let dataOffset = FREE_MEMORY_START;
     for (const call of calls) {
@@ -45,7 +49,7 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         const curDataSize = byteLength(call.data);
         dataOffset += curDataSize;
 
-        // stack: [return_data_end]
+        // stack: [length_size, return_data_end]
 
         // make call
         instructions.push(
@@ -59,22 +63,35 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
             ins.CALL
         );
 
-        // stack: [return_data_end, call_success]
+        // stack: [length_size, return_data_end, call_success]
 
         // write success state to result
         {
             instructions.push(ins.DUP(2));
-            // stack: [return_data_end, call_success, return_data_end]
+            // stack: [length_size, return_data_end, call_success, return_data_end]
             instructions.push(ins.MSTORE8);
-            // stack: [return_data_end]
+            // stack: [length_size, return_data_end]
 
             // call_success is written as 1 byte. Increase free_memory_part by 1
             instructions.push(ins.PUSH_NUMBER(1), ins.ADD);
         }
-        // stack: [return_data_end]
+        // stack: [length_size, return_data_end]
 
-        // write the return data to memory
         {
+            // write the length
+            // do shifting to reduce the size
+            instructions.push(
+                ins.RETURNDATASIZE, // value
+                ins.PUSH_NUMBER((32 - LENGTH_SIZE) * 8), // shift
+                ins.SHL,
+                ins.DUP(2), // offset
+                ins.MSTORE
+            );
+
+            // increase return_data_end by 32
+            instructions.push(ins.DUP(2), ins.ADD);
+
+            // write the return data to memory
             instructions.push(
                 ins.RETURNDATASIZE, // size
                 ins.PUSH0, // offset
@@ -82,26 +99,26 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
                 ins.RETURNDATACOPY
             );
 
-            // stack: [return_data_end]
+            // stack: [length_size, return_data_end]
 
-            // Data is written. Increase return_data_end
+            // Data is written. Increase return_data_end.
             instructions.push(ins.RETURNDATASIZE, ins.ADD);
         }
 
-        // stack: [return_data_end].
+        // stack: [length_size, return_data_end].
 
         // The stack state **should** be the same as the beginning of the cycle.
     }
 
-    // stack: [return_data_end]
+    // stack: [length_size, return_data_end]
 
     // return the result
     {
         // get the size
         instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START), ins.SWAP(1), ins.SUB);
-        // stack: [return_data_size]
+        // stack: [length_size, return_data_size]
         instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START));
-        // stack: [return_data_size, start_of_return_data]
+        // stack: [length_size, return_data_size, start_of_return_data]
         instructions.push(ins.RETURN);
     }
 

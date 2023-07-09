@@ -38,6 +38,7 @@ export const ADD = singleByteInstruction(0x01);
 export const SUB = singleByteInstruction(0x03);
 export const RETURN = singleByteInstruction(0xf3);
 export const STOP = singleByteInstruction(0x00);
+export const SHL = singleByteInstruction(0x1b);
 
 export function VERBATIM(bytes: Bytes): Instruction {
     const byteSize = byteLength(bytes);
