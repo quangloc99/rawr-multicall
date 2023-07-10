@@ -12,6 +12,7 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
     const instructions: ins.Instruction[] = [];
 
     const LABELS = {
+        // This label will be pushed in the very end.
         dataStart: 'data-start',
     };
 
@@ -33,16 +34,17 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
 
     const SIGN_BIT = 256 - 1;
     const LENGTH_SIZE = 4; // how many byte to store array length.
+    const LENGTH_SHIFT = (32 - LENGTH_SIZE) * 8; // how much to shift to convert 32 bytes to LENGTH_SIZE bytes
     const RETURN_DATA_START = FREE_MEMORY_START + totalDataSize;
 
     // convenient constant(s)
-    instructions.push(ins.PUSH_NUMBER(SIGN_BIT), ins.PUSH_NUMBER(LENGTH_SIZE));
+    instructions.push(ins.PUSH_NUMBER(SIGN_BIT), ins.PUSH_NUMBER(LENGTH_SHIFT), ins.PUSH_NUMBER(LENGTH_SIZE));
 
     // manipulate this number on stack instead of loading right from memory
     instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START));
 
     // we maintain the end of the current return data
-    // stack: [sign_bit, length_size, return_data_end]
+    // stack: [sign_bit, length_shift, length_size, return_data_end]
 
     let dataOffset = FREE_MEMORY_START;
     for (const call of calls) {
@@ -50,7 +52,7 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         const curDataSize = byteLength(call.data);
         dataOffset += curDataSize;
 
-        // stack: [sign_bit, length_size, return_data_end]
+        // stack: [sign_bit, length_shift, length_size, return_data_end]
 
         // make call
         instructions.push(
@@ -64,41 +66,41 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
             ins.CALL
         );
 
-        // stack: [sign_bit, length_size, return_data_end, call_success]
+        // stack: [sign_bit, length_shift, length_size, return_data_end, call_success]
 
         // write call_success + result length
         {
             // shift call_success to be the most significant bit
             instructions.push(
-                ins.DUP(4), // shift=sign_bit
+                ins.DUP(5), // shift=sign_bit
                 ins.SHL
             );
-            // stack: [sign_bit, length_size, return_data_end, shifted_call_success]
+            // stack: [sign_bit, length_shift, length_size, return_data_end, shifted_call_success]
 
             instructions.push(ins.RETURNDATASIZE);
-            // stack: [sign_bit, length_size, return_data_end, shifted_call_success, current_return_data_size]
+            // stack: [sign_bit, length_shift, length_size, return_data_end, shifted_call_success, current_return_data_size]
 
             // shift current_return_data_size to fit LENGTH_SIZE
             instructions.push(
-                ins.PUSH_NUMBER((32 - LENGTH_SIZE) * 8), // shift
+                ins.DUP(5), // shift=length_shift
                 ins.SHL
             );
-            // stack: [sign_bit, length_size, return_data_end, shifted_call_success, shifted_current_return_data_size]
+            // stack: [sign_bit, length_shift, length_size, return_data_end, shifted_call_success, shifted_current_return_data_size]
 
             // combine
             instructions.push(ins.ADD);
-            // stack: [sign_bit, length_size, return_data_end, shifted_call_success + shifted_current_return_data_size]
+            // stack: [sign_bit, length_shift, length_size, return_data_end, shifted_call_success + shifted_current_return_data_size]
 
             // write
             instructions.push(
-                ins.DUP(2), // offset = return_data_end
+                ins.DUP(2), // offset=return_data_end
                 ins.MSTORE
             );
-            // stack: [sign_bit, length_size, return_data_end]
+            // stack: [sign_bit, length_shift, length_size, return_data_end]
 
             // increase return_data_end by 32
             instructions.push(ins.DUP(2), ins.ADD);
-            // stack: [sign_bit, length_size, return_data_end]
+            // stack: [sign_bit, length_shift, length_size, return_data_end]
         }
 
         // write the return data to memory
@@ -109,27 +111,27 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
                 ins.DUP(3), // destOffset = return_data_end
                 ins.RETURNDATACOPY
             );
-            // stack: [sign_bit, length_size, return_data_end]
+            // stack: [sign_bit, length_shift, length_size, return_data_end]
 
             // Data is written. Increase return_data_end.
             instructions.push(ins.RETURNDATASIZE, ins.ADD);
-            // stack: [sign_bit, length_size, return_data_end]
+            // stack: [sign_bit, length_shift, length_size, return_data_end]
         }
 
         // The stack state **should** be the same as the beginning of the cycle.
     }
 
-    // stack: [sign_bit, length_size, return_data_end]
+    // stack: [sign_bit, length_shift, length_size, return_data_end]
 
     // return the result
     {
         // get the size
         instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START), ins.SWAP(1), ins.SUB);
-        // stack: [sign_bit, length_size, return_data_size]
+        // stack: [sign_bit, length_shift, length_size, return_data_size]
         instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START));
-        // stack: [sign_bit, length_size, return_data_size, start_of_return_data]
+        // stack: [sign_bit, length_shift, length_size, return_data_size, start_of_return_data]
         instructions.push(ins.RETURN);
-        // stack: [sign_bit, length_size]
+        // stack: [sign_bit, length_shift, length_size]
     }
 
     instructions.push(ins.STOP);
