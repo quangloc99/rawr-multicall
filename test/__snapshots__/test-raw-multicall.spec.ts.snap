@@ -51,3 +51,12 @@ exports[`buildRawMulticallContract for chain 1 erc20 simple 2`] = `
 `;
 
 exports[`buildRawMulticallContract for chain 1 erc20 simple 3`] = `"0x80000020000000000000000000000000000000000000000000110dad9ac2ff4020aa7336"`;
+
+exports[`buildRawMulticallContract for chain 1 erc20 simple 4`] = `
+[
+  {
+    "data": "000000000000000000000000000000000000000000110dad9ac2ff4020aa7336",
+    "success": true,
+  },
+]
+`;

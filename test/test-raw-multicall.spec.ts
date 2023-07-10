@@ -1,4 +1,4 @@
-import { Bytes, buildRawMulticallContract, createCall } from '../src';
+import { Bytes, buildRawMulticallContract, createCall, decodeData } from '../src';
 import { Interface, JsonRpcProvider } from 'ethers';
 import { ERC20Abi } from './abi';
 import { describeForChain } from './test-helper';
@@ -30,6 +30,8 @@ describeForChain(
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
                 expect(res).toMatchSnapshot();
+                const output = decodeData(res);
+                expect(output).toMatchSnapshot();
             });
         });
     }

@@ -2,6 +2,7 @@ import { Call } from './Call';
 import { concat, byteLength } from './bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
+import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START } from './constants';
 
 export function buildRawMulticallContract(calls: Call[], params?: InstructionContextParams) {
     const instructions = buildRawMulticallInstructions(calls);
@@ -21,8 +22,6 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         .map(byteLength)
         .reduce((a, b) => a + b, 0);
 
-    const FREE_MEMORY_START = 0x80;
-
     // copy ALL data to memory
     // use CODECOPY as the data will be appended right after the creation code.
     instructions.push(
@@ -32,13 +31,10 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         ins.CODECOPY
     );
 
-    const SIGN_BIT = 256 - 1;
-    const LENGTH_SIZE = 4; // how many byte to store array length.
-    const LENGTH_SHIFT = (32 - LENGTH_SIZE) * 8; // how much to shift to convert 32 bytes to LENGTH_SIZE bytes
     const RETURN_DATA_START = FREE_MEMORY_START + totalDataSize;
 
     // convenient constant(s)
-    instructions.push(ins.PUSH_NUMBER(SIGN_BIT), ins.PUSH_NUMBER(LENGTH_SHIFT), ins.PUSH_NUMBER(LENGTH_SIZE));
+    instructions.push(ins.PUSH_NUMBER(SIGN_BIT), ins.PUSH_NUMBER(LENGTH_SHIFT), ins.PUSH_NUMBER(LENGTH_SIZE_bytes));
 
     // manipulate this number on stack instead of loading right from memory
     instructions.push(ins.PUSH_NUMBER(RETURN_DATA_START));
