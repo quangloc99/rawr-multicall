@@ -12,8 +12,7 @@ export function describeForChain(
 
     for (const chain of Object.values(CHAIN_ID_MAPPING)) {
         const isAllowedChain = env.ALL_CHAIN || chain === env.CHAIN_ID;
-        if (!isAllowedChain) continue;
         const name = nameFormatter(chain);
-        describe(name, () => callback(RPC_URL[chain], chain));
+        (isAllowedChain ? describe : describe.skip)(name, () => callback(RPC_URL[chain], chain));
     }
 }

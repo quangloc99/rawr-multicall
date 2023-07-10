@@ -4,13 +4,14 @@ exports[`buildRawMulticallContract for chain 1 erc20 simple 1`] = `"0x70a0823100
 
 exports[`buildRawMulticallContract for chain 1 erc20 simple 2`] = `
 {
-  "byteCode": "0x60246200004660803960ff600460a45f5f602460805f73808507121b80c02388fad14726482e061b8da8275af1831b3d60e01b01815281013d5f823e3d0160a4900360a4f30070a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec",
+  "byteCode": "0x60246200004760803960ff60e0600460a45f5f602460805f73808507121b80c02388fad14726482e061b8da8275af1841b3d841b01815281013d5f823e3d0160a4900360a4f30070a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec",
   "splittedByteCodes": [
     "6024",
-    "62000046",
+    "62000047",
     "6080",
     "39",
     "60ff",
+    "60e0",
     "6004",
     "60a4",
     "5f",
@@ -21,10 +22,10 @@ exports[`buildRawMulticallContract for chain 1 erc20 simple 2`] = `
     "73808507121b80c02388fad14726482e061b8da827",
     "5a",
     "f1",
-    "83",
+    "84",
     "1b",
     "3d",
-    "60e0",
+    "84",
     "1b",
     "01",
     "81",
