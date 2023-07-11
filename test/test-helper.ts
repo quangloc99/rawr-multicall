@@ -1,4 +1,4 @@
-import { CHAIN_ID_MAPPING } from '../helpers/chainId';
+import { CHAIN_ID_MAPPING } from '../src/chainId';
 import { RPC_URL } from '../helpers/rpc-url';
 import { env } from '../helpers/env';
 
