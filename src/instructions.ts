@@ -25,7 +25,6 @@ export function joinInstructions(...instructions: Instruction[]): Instruction {
 
 // https://www.evm.codes/
 
-export const PUSH0 = singleByteInstruction(0x5f);
 export const GAS = singleByteInstruction(0x5a);
 export const CODECOPY = singleByteInstruction(0x39);
 export const RETURNDATASIZE = singleByteInstruction(0x3d);
@@ -55,6 +54,11 @@ export function PUSH(byteSize: number, bytes: Bytes): Instruction {
         generate: () => concat(byte(0x60 + byteSize - 1), bytes),
     };
 }
+
+export const PUSH0: Instruction = {
+    byteSize: (context) => (context.allowPUSH0() ? 1 : 2),
+    generate: (context) => (context.allowPUSH0() ? byte(0x5f) : '6000'),
+};
 
 export function PUSH_NUMBER(num: number): Instruction {
     if (num == 0) return PUSH0;

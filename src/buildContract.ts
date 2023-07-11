@@ -7,6 +7,7 @@ export const DEFAULT_LABEL_SIZE = 3;
 
 export type InstructionContextParams = {
     labelSize?: number;
+    allowPUSH0?: boolean;
 };
 
 export function buildContract(
@@ -16,12 +17,13 @@ export function buildContract(
     splittedByteCodes: Bytes[];
     byteCode: Bytes;
 } {
-    const { labelSize = DEFAULT_LABEL_SIZE } = params ?? {};
+    const { labelSize = DEFAULT_LABEL_SIZE, allowPUSH0 = false } = params ?? {};
     const labelPosition = new Map<string, number>();
     let totalSize = 0;
 
     const preprocessingInstructionContext: PreprocessingInstructionContext = {
         getLabelSize: () => labelSize,
+        allowPUSH0: () => allowPUSH0,
         addLabel(label: string) {
             assert(!labelPosition.has(label), `Duplicated label ${JSON.stringify(label)}`);
             labelPosition.set(label, totalSize);

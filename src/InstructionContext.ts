@@ -3,6 +3,7 @@ import { type Instruction } from './instructions';
 export type PreprocessingInstructionContext = {
     getLabelSize(): number;
     addLabel(label: string): void;
+    allowPUSH0(): boolean;
 };
 
 export type InstructionContext = PreprocessingInstructionContext & {
