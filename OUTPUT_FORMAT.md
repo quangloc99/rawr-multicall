@@ -35,7 +35,7 @@ For each entry, there will be only 3 fields:
 
 | Name          | Size (bits)       |
 | :------------ | :---------------- |
-| `sucess`      | 1                 |
+| `success`     | 1                 |
 | `data.length` | 31                |
 | `data`        | `data.length * 8` |
 

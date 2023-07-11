@@ -7,3 +7,31 @@ export function toHex(num: number, byteSize = 1) {
 export function byteSize(num: number): number {
     return toHex(num).length / 2;
 }
+
+export type Iterableify<T> = { [K in keyof T]: Iterable<T[K]> };
+/**
+ * Stolen from https://dev.to/chrismilson/zip-iterator-in-typescript-ldm
+ *
+ * @remarks
+ * Some common usages:
+ * - Convert generator to array:
+ *  ```ts
+ * const firstWay = [...zip(a, b)];
+ * const secondWay = Array.from(zip(a, b));
+ * ```
+ *
+ * - Map element:
+ * ```ts
+ * const mappedArray = Array.from(zip(a, b), mapFn);
+ * ```
+ */
+export function* zip<T extends unknown[]>(...toZip: Iterableify<T>): Generator<T> {
+    const iterators = toZip.map((i) => i[Symbol.iterator]());
+    while (true) {
+        const results = iterators.map((i) => i.next());
+        if (results.some(({ done }) => done)) {
+            break;
+        }
+        yield results.map(({ value }) => value as unknown) as T;
+    }
+}

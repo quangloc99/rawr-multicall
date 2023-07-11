@@ -1,4 +1,4 @@
-import { Bytes, buildRawMulticallContract, createCall, decodeData } from '../src';
+import { Bytes, buildRawMulticallContract, createCall, decodeResult } from '../src';
 import { Interface, JsonRpcProvider } from 'ethers';
 import { ERC20Abi } from './abi';
 import { describeForChain } from './test-helper';
@@ -25,12 +25,13 @@ describeForChain(
 
             it('simple', async () => {
                 const callData = iface.encodeFunctionData('balanceOf', [holder[0]]);
-                const sendData = buildRawMulticallContract([createCall(pendle, callData)]);
+                const calls = [createCall(pendle, callData)] as const;
+                const sendData = buildRawMulticallContract(calls);
                 expect(callData).toMatchSnapshot();
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
                 expect(res).toMatchSnapshot();
-                const output = decodeData(res);
+                const output = decodeResult(calls, res);
                 expect(output).toMatchSnapshot();
             });
         });

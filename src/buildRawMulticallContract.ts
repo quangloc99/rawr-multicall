@@ -4,12 +4,17 @@ import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START } from './constants';
 
-export function buildRawMulticallContract(calls: Call[], params?: InstructionContextParams) {
+export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
+    calls: Calls,
+    params?: InstructionContextParams
+) {
     const instructions = buildRawMulticallInstructions(calls);
     return buildContract(instructions, params);
 }
 
-export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] {
+export function buildRawMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
+    calls: Calls
+): ins.Instruction[] {
     const instructions: ins.Instruction[] = [];
 
     const LABELS = {
@@ -17,10 +22,11 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
         dataStart: 'data-start',
     };
 
-    const totalDataSize = calls
-        .map(({ data }) => data)
-        .map(byteLength)
-        .reduce((a, b) => a + b, 0);
+    const callData = calls.map((call) => ({
+        data: call.getData(),
+        contractAddress: call.getContractAddress(),
+    }));
+    const totalDataSize = callData.map((call) => byteLength(call.data)).reduce((a, b) => a + b, 0);
 
     // copy ALL data to memory
     // use CODECOPY as the data will be appended right after the creation code.
@@ -43,7 +49,7 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
     // stack: [sign_bit, length_shift, length_size, return_data_end]
 
     let dataOffset = FREE_MEMORY_START;
-    for (const call of calls) {
+    for (const call of callData) {
         const curDataOffset = dataOffset;
         const curDataSize = byteLength(call.data);
         dataOffset += curDataSize;
@@ -131,7 +137,7 @@ export function buildRawMulticallInstructions(calls: Call[]): ins.Instruction[] 
     }
 
     instructions.push(ins.STOP);
-    const data = concat(calls.map(({ data }) => data));
+    const data = concat(callData.map(({ data }) => data));
     instructions.push(ins.LABEL(LABELS.dataStart, { isEmpty: true }));
     instructions.push(ins.VERBATIM(data));
     return instructions;
