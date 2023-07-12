@@ -35,3 +35,13 @@ export function* zip<T extends unknown[]>(...toZip: Iterableify<T>): Generator<T
         yield results.map(({ value }) => value as unknown) as T;
     }
 }
+
+export function prefixSum(arr: number[]): number[] {
+    const res = [];
+    let last = 0;
+    for (const cur of arr) {
+        last += cur;
+        res.push(last);
+    }
+    return res;
+}

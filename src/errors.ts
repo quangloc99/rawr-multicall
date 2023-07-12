@@ -4,6 +4,7 @@ export function assert(cond: boolean, msg?: string): asserts cond is true {
     }
 }
 
-export function assertDefined<T>(value: T | null | undefined, msg?: string): asserts value is T {
+export function assertDefined<T>(value: T | null | undefined, msg?: string): T {
     assert(value != null, msg);
+    return value as T;
 }

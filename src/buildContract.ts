@@ -42,8 +42,7 @@ export function buildContract(
         instructions,
         getPos(label: string) {
             const res = labelPosition.get(label);
-            assertDefined(res, `Label ${JSON.stringify(label)} not found`);
-            return res;
+            return assertDefined(res, `Label ${JSON.stringify(label)} not found`);
         },
         getTotalSize: () => totalSize,
     };
