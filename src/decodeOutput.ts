@@ -2,7 +2,7 @@
  * See {@link ../OUTPUT_FORMAT.md} for the output format.
  */
 
-import { Bytes, ByteStream, createByteStream } from './bytes';
+import { Bytes, ByteStream, createByteStream, add0x } from './bytes';
 import { RawResult, Result, ResultsOfCalls } from './Result';
 import { LENGTH_SIZE_bits } from './constants';
 import { Call } from './Call';
@@ -17,7 +17,7 @@ export function* decodeRawResultStream(stream: ByteStream): Generator<RawResult>
         const successAndLength = parseInt(stream.next(4), 16);
         const success = successAndLength >>> (LENGTH_SIZE_bits - 1);
         const dataLength = successAndLength ^ (success << (LENGTH_SIZE_bits - 1));
-        const data = stream.next(dataLength);
+        const data = add0x(stream.next(dataLength));
         yield { success: !!success, data };
     }
 }

@@ -5,6 +5,7 @@ export type JoinedCalldata = {
     parts: {
         offset: number;
         size: number;
+        groupId: number;
     }[];
 };
 
@@ -17,16 +18,16 @@ export const basicCalldataJoiner = {
         const result = concat(data);
         const parts: JoinedCalldata['parts'] = [];
         let currentOffset = 0;
-        for (const d of data) {
+        for (const [id, d] of data.entries()) {
             const size = byteLength(d);
-            parts.push({ offset: currentOffset, size });
+            parts.push({ offset: currentOffset, size, groupId: id });
             currentOffset += size;
         }
         return { result, parts };
     },
 };
 
-export const groupedCalldataJoiner = {
+export const groupedCalldataJoiner: CalldataJoiner = {
     join(data: Bytes[]) {
         const dataGroup = new Map<Bytes, number[]>();
         for (let i = 0; i < data.length; ++i) {
@@ -39,15 +40,15 @@ export const groupedCalldataJoiner = {
         }
 
         const compressedData: Bytes[] = [];
-        const dummyPart = { offset: 0, size: 0 };
+        const dummyPart = { offset: 0, size: 0, groupId: 0 };
         const parts = data.map(() => dummyPart);
 
         let currentOffset = 0;
-        for (const [d, group] of dataGroup.entries()) {
+        for (const [groupId, [d, group]] of Array.from(dataGroup.entries()).entries()) {
             compressedData.push(d);
             const size = byteLength(d);
             for (const i of group) {
-                parts[i] = { offset: currentOffset, size };
+                parts[i] = { offset: currentOffset, size, groupId };
             }
             currentOffset += size;
         }

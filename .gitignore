@@ -118,3 +118,6 @@ dist
 .DS_Store
 
 build/
+
+# hardhat cache
+cache/

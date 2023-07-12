@@ -1,3 +1,4 @@
+export * from './Address';
 export * from './InstructionContext';
 export * from './instructions';
 export * from './bytes';
