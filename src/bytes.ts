@@ -8,11 +8,13 @@ export type ByteStream = {
 };
 
 export function strip0x(bytes: Bytes) {
+    bytes = bytes.toLowerCase();
     if (bytes.startsWith('0x')) return bytes.slice(2);
     return bytes;
 }
 
 export function add0x(bytes: Bytes) {
+    bytes = bytes.toLowerCase();
     if (bytes.startsWith('0x')) return bytes;
     return '0x' + bytes;
 }

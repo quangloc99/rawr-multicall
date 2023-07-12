@@ -1,20 +1,28 @@
 import { Call } from './Call';
-import { concat, byteLength } from './bytes';
+import { byteLength } from './bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START } from './constants';
+import { CalldataJoiner, groupedCalldataJoiner } from './CalldataJoiner';
+import { zip } from './util';
+
+export type BuildRawMulticallContractParams = InstructionContextParams & {
+    calldataJoiner?: CalldataJoiner;
+};
 
 export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
     calls: Calls,
-    params?: InstructionContextParams
+    params?: BuildRawMulticallContractParams
 ) {
-    const instructions = buildRawMulticallInstructions(calls);
+    const instructions = buildRawMulticallInstructions(calls, params);
     return buildContract(instructions, params);
 }
 
 export function buildRawMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
-    calls: Calls
+    calls: Calls,
+    params?: BuildRawMulticallContractParams
 ): ins.Instruction[] {
+    const { calldataJoiner = groupedCalldataJoiner } = params ?? {};
     const instructions: ins.Instruction[] = [];
 
     const LABELS = {
@@ -26,13 +34,15 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         data: call.getData(),
         contractAddress: call.getContractAddress(),
     }));
-    const totalDataSize = callData.map((call) => byteLength(call.data)).reduce((a, b) => a + b, 0);
+    const joinedCalldata = calldataJoiner.join(callData.map(({ data }) => data));
+
+    const totalDataSize = byteLength(joinedCalldata.result);
 
     // copy ALL data to memory
     // use CODECOPY as the data will be appended right after the creation code.
     instructions.push(
         ins.PUSH_NUMBER(totalDataSize), // size
-        ins.PUSH_LABEL('data-start'), // offset
+        ins.PUSH_LABEL('data-start'), // offset. This label is mark at the end of this function.
         ins.PUSH_NUMBER(FREE_MEMORY_START), // destOffset
         ins.CODECOPY
     );
@@ -48,11 +58,10 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     // we maintain the end of the current return data
     // stack: [sign_bit, length_shift, length_size, return_data_end]
 
-    let dataOffset = FREE_MEMORY_START;
-    for (const call of callData) {
-        const curDataOffset = dataOffset;
-        const curDataSize = byteLength(call.data);
-        dataOffset += curDataSize;
+    const dataOffset = FREE_MEMORY_START;
+    for (const [call, currentPart] of zip(callData, joinedCalldata.parts)) {
+        const curDataOffset = dataOffset + currentPart.offset;
+        const curDataSize = currentPart.size;
 
         // stack: [sign_bit, length_shift, length_size, return_data_end]
 
@@ -136,9 +145,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         // stack: [sign_bit, length_shift, length_size]
     }
 
-    instructions.push(ins.STOP);
-    const data = concat(callData.map(({ data }) => data));
     instructions.push(ins.LABEL(LABELS.dataStart, { isEmpty: true }));
-    instructions.push(ins.VERBATIM(data));
+    instructions.push(ins.VERBATIM(joinedCalldata.result));
     return instructions;
 }
