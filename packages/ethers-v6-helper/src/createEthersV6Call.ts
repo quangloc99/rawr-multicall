@@ -20,7 +20,7 @@ export async function createEthersV6Call<
 ): Promise<Call<ReturnType, unknown>> {
     const address = castToAddress(params.withAddress != undefined ? params.withAddress : await contract.getAddress());
     // eslint-disable-next-line
-    const data = (contract as any)[methodName].populateTransaction(...(methodParams as any)).data as string;
+    const data = (await (contract as any)[methodName].populateTransaction(...(methodParams as any))).data as string;
     return {
         getContractAddress: () => address,
         getData: () => data,

@@ -20,5 +20,5 @@ export type MethodReturnType<C, Name extends MethodNames<C>> = C extends {
         staticCall(...params: unknown[]): infer ReturnType;
     };
 }
-    ? ReturnType
+    ? Awaited<ReturnType>
     : unknown;
