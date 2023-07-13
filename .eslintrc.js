@@ -1,4 +1,7 @@
 module.exports = {
+    ignorePatterns: [
+        ".eslintrc.js"
+    ],
     root: true,
     parser: '@typescript-eslint/parser',
     extends: ['prettier'],
@@ -11,7 +14,7 @@ module.exports = {
     },
     plugins: ['prettier', 'unused-imports'],
     parserOptions: {
-        tsconfigRootDir: __dirname,
+        // tsconfigRootDir: __dirname,
         project: ['./tsconfig.json'],
     },
     extends: [

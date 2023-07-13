@@ -1,7 +1,7 @@
-import { Bytes, buildRawMulticallContract, createCall, decodeResult, CHAIN_ID_MAPPING } from '../src';
+import { Bytes, buildRawMulticallContract, createCall, decodeResult } from '../src';
 import { Interface, JsonRpcProvider } from 'ethers';
 import { ERC20Abi } from './abi';
-import { describeForChain } from './test-helper';
+import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 
 const TEST_DATA: Record<
     number,

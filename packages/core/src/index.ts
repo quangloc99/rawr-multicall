@@ -6,5 +6,4 @@ export * from './Call';
 export * from './buildContract';
 export * from './buildRawMulticallContract';
 export * from './decodeOutput';
-export * from './chainId';
 export * from './errors';

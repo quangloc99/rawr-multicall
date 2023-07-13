@@ -16,6 +16,9 @@ jobs:
       
     - name: Set yarn version to version 3.x
       run: yarn set version 3.3.1
+    
+    - name: Add yarn workspace-tool
+      run: yarn plugin import workspace-tools
        
     - name: Set authentication token
       run: 'yarn config set npmScopes.pendle.npmAuthToken "${NPM_AUTH_TOKEN}"'
@@ -24,7 +27,7 @@ jobs:
       run: yarn install --immutable
        
     - name: Lint 
-      run: yarn lint:nofix
+      run: yarn workspaces foreach run lint:nofix
        
     - name: Type check
-      run: yarn typecheck
+      run: yarn workspaces foreach run typecheck

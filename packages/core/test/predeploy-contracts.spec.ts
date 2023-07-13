@@ -1,7 +1,7 @@
-import { describeForChain } from './test-helper';
+import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
 import { APlusB__factory, APlusB } from './typechain-types';
-import { labeledAddress, CHAIN_ID_MAPPING, buildRawMulticallContract, createCall, decodeRawResult } from '../src';
+import { labeledAddress, buildRawMulticallContract, createCall, decodeRawResult } from '../src';
 
 describeForChain(
     (chain: number) => `Test predeploy contracts for chain ${chain}`,

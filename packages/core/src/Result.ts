@@ -26,7 +26,7 @@ export type ResultsOfCalls<Calls extends readonly Call<unknown, unknown>[]> = Ca
     ? ResultOfCall<Calls[number]>[]
     : Calls extends readonly [
           infer Head extends Call<unknown, unknown>,
-          ...infer Rest extends readonly Call<unknown, unknown>[]
+          ...infer Rest extends readonly Call<unknown, unknown>[],
       ]
     ? [ResultOfCall<Head>, ...ResultsOfCalls<Rest>]
     : never;

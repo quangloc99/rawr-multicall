@@ -3,7 +3,7 @@ import { Config } from 'jest';
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
-const config: Config = {
+export const jestConfig: Config = {
     coveragePathIgnorePatterns: ['dist/', '/node_modules/', 'test/'],
     coverageProvider: 'v8',
     moduleDirectories: ['node_modules'],
@@ -22,5 +22,3 @@ const config: Config = {
     },
     testTimeout: 100000,
 };
-
-export default config;

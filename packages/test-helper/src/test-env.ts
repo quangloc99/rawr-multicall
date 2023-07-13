@@ -3,10 +3,10 @@ import { config } from 'dotenv';
 
 config();
 
-export const ENV_SCHEMA = z.object({
+export const TEST_ENV_SCHEMA = z.object({
     BLOCK_NUMBER: z.coerce.number().optional(),
     CHAIN_ID: z.coerce.number().optional(),
 });
 
-export type Env = z.infer<typeof ENV_SCHEMA>;
-export const env = ENV_SCHEMA.parse(process.env);
+export type TestEnv = z.infer<typeof TEST_ENV_SCHEMA>;
+export const testEnv = TEST_ENV_SCHEMA.parse(process.env);
