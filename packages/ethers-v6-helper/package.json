@@ -1,13 +1,8 @@
 {
-    "name": "@raw-multicall/core",
+    "name": "@raw-multicall/ethers-v6-helper",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "files": [
-        "dist",
-        "src",
-        "README.md"
-    ],
     "devDependencies": {
         "@raw-multicall/test-helper": "workspace:*",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -16,7 +11,6 @@
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-prettier": "^5.0.0",
         "eslint-plugin-unused-imports": "^3.0.0",
-        "hardhat": "^2.16.1",
         "jest": "^29.6.1",
         "prettier": "^3.0.0",
         "ts-jest": "^29.1.1",
@@ -29,5 +23,9 @@
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
         "test": "yarn jest"
+    },
+    "dependencies": {
+        "@raw-multicall/core": "workspace:*",
+        "ethers": "^6.6.3"
     }
 }
