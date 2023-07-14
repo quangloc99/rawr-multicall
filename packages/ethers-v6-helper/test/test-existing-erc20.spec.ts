@@ -23,8 +23,6 @@ describeForChain(
             it('simple', async () => {
                 const contract = new BaseContract(CUR_TEST_DATA.tokenAddresses[0], ERC20__factory.abi) as ERC20;
                 const calls = [await createEthersV6Call(contract, 'name', [])];
-                console.log(calls[0].getContractAddress());
-                console.log(calls[0].getData());
                 const sendData = buildRawMulticallContract(calls, { allowPUSH0 });
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
