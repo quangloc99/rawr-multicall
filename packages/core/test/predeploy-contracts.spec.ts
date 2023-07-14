@@ -2,6 +2,7 @@ import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
 import { APlusB__factory, TestContract__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
 import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
+import { TestContractInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/TestContract';
 import {
     labeledAddress,
     buildRawMulticallContract,
@@ -20,6 +21,9 @@ describeForChain(
         const APlusBFactory = new APlusB__factory();
         const TestContractFactory = new TestContract__factory();
         const APlusBIface = new ethers.Interface(APlusB__factory.abi) as unknown as APlusBInterface;
+        const TestContractInterface = new ethers.Interface(
+            TestContract__factory.abi
+        ) as unknown as TestContractInterface;
         const allowPUSH0 = chain !== CHAIN_ID_MAPPING.ARBITRUM;
 
         beforeEach(() => {
@@ -44,6 +48,46 @@ describeForChain(
             expect(result).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('plus', result[0].data)).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('minus', result[1].data)).toMatchSnapshot();
+        });
+
+        it('complex', async () => {
+            const { data: aPlusBContract } = await APlusBFactory.getDeployTransaction();
+            const { data: testContract } = await TestContractFactory.getDeployTransaction();
+
+            const calls = [
+                createCall(labeledAddress('a'), APlusBIface.encodeFunctionData('plus', [1, 2])),
+                createCall(labeledAddress('b'), APlusBIface.encodeFunctionData('plus', [3, 4])),
+                createCall(labeledAddress('c'), APlusBIface.encodeFunctionData('minus', [5, 6])),
+
+                createCall(labeledAddress('x'), TestContractInterface.encodeFunctionData('compare', [1, 2])),
+                createCall(labeledAddress('y'), TestContractInterface.encodeFunctionData('swapXY', [{ x: 1, y: -1 }])),
+                createCall(labeledAddress('z'), TestContractInterface.encodeFunctionData('hash', [12345])),
+            ];
+
+            const callData = buildRawMulticallContract(calls, {
+                allowPUSH0,
+                predeployContracts: {
+                    a: aPlusBContract,
+                    b: aPlusBContract,
+                    c: aPlusBContract,
+                    x: testContract,
+                    y: testContract,
+                    z: testContract,
+                },
+            });
+
+            expect(callData).toMatchSnapshot();
+            const res = await provider.call({ data: callData.byteCode });
+            const decodedResult = decodeRawResult(res);
+            expect(res).toMatchSnapshot();
+            expect(decodedResult).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('plus', decodedResult[0].data)).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('plus', decodedResult[1].data)).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('minus', decodedResult[2].data)).toMatchSnapshot();
+
+            expect(TestContractInterface.decodeFunctionResult('compare', decodedResult[3].data)).toMatchSnapshot();
+            expect(TestContractInterface.decodeFunctionResult('swapXY', decodedResult[4].data)).toMatchSnapshot();
+            expect(TestContractInterface.decodeFunctionResult('hash', decodedResult[5].data)).toMatchSnapshot();
         });
 
         it('no predeployed', () => {
