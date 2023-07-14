@@ -1,8 +1,13 @@
 import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
-import { APlusB__factory, TestContract__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
+import {
+    APlusB__factory,
+    TestContract__factory,
+    ThrowError__factory,
+} from '@raw-multicall/test-helper/typechain-types-ethers-v6';
 import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
 import { TestContractInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/TestContract';
+import { ThrowErrorInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/ThrowError';
 import {
     labeledAddress,
     buildRawMulticallContract,
@@ -20,10 +25,12 @@ describeForChain(
         const provider = new ethers.JsonRpcProvider(rpcUrl);
         const APlusBFactory = new APlusB__factory();
         const TestContractFactory = new TestContract__factory();
+        const ThrowErrorFactory = new ThrowError__factory();
         const APlusBIface = new ethers.Interface(APlusB__factory.abi) as unknown as APlusBInterface;
         const TestContractInterface = new ethers.Interface(
             TestContract__factory.abi
         ) as unknown as TestContractInterface;
+        const ThrowErrorInterface = new ethers.Interface(ThrowError__factory.abi) as unknown as ThrowErrorInterface;
         const allowPUSH0 = chain !== CHAIN_ID_MAPPING.ARBITRUM;
 
         beforeEach(() => {
@@ -127,6 +134,32 @@ describeForChain(
 
             expect(calldata2.byteCode.includes(strip0x(aPlusB))).toBeFalsy();
             expect(calldata2.byteCode.includes(strip0x(testContract))).toBeTruthy();
+        });
+
+        it('throw error', async () => {
+            const { data: throwErrorContractByteCode } = await ThrowErrorFactory.getDeployTransaction();
+            registerPredeployContract('throw-error', throwErrorContractByteCode);
+            const calls = [
+                createCall(
+                    labeledAddress('throw-error'),
+                    ThrowErrorInterface.encodeFunctionData('justRevert', ['abc'])
+                ),
+                createCall(
+                    labeledAddress('throw-error'),
+                    ThrowErrorInterface.encodeFunctionData('revertError', ['xyz'])
+                ),
+                createCall(labeledAddress('throw-error'), ThrowErrorInterface.encodeFunctionData('revertCustom', [1])),
+                createCall(labeledAddress('throw-error'), ThrowErrorInterface.encodeFunctionData('revertPanic')),
+            ];
+
+            const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+            expect(calldata).toMatchSnapshot();
+            const res = await provider.call({ data: calldata.byteCode });
+            const decodedRes = decodeRawResult(res);
+            expect(decodedRes).toMatchSnapshot();
+            expect(ThrowErrorInterface.decodeErrorResult('Error', decodedRes[1].data)).toMatchSnapshot();
+            expect(ThrowErrorInterface.decodeErrorResult('CustomError', decodedRes[2].data)).toMatchSnapshot();
+            expect(ThrowErrorInterface.decodeErrorResult('Panic', decodedRes[3].data)).toMatchSnapshot();
         });
     }
 );
