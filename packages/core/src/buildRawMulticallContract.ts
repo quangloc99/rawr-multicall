@@ -113,8 +113,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const wrappedPushAddress = (addr: Address) => {
         if (addr.type == 'string') return [ins.PUSH_ADDRESS(addr.address)];
         const id = assertDefined(usedPredeployContracts.get(addr.label)?.id);
-        const { groupId } = joinedPredeployContractsByteCode.parts[id];
-        return [ins.MLOAD_OFFSET(groupId * WORD_SIZE_bytes + predeployContractAddressesOffset)];
+        return [ins.MLOAD_OFFSET(id * WORD_SIZE_bytes + predeployContractAddressesOffset)];
     };
 
     for (const [call, currentPart] of zip(callData, joinedCalldata.parts)) {
