@@ -7,3 +7,4 @@ export * from './buildContract';
 export * from './buildRawMulticallContract';
 export * from './decodeOutput';
 export * from './errors';
+export * from './registerPredeployContract';

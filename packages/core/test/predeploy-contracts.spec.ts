@@ -8,6 +8,9 @@ import {
     createCall,
     decodeRawResult,
     NoPredeployContractError,
+    resetPredeployContracts,
+    registerPredeployContract,
+    strip0x,
 } from '../src';
 
 describeForChain(
@@ -18,20 +21,24 @@ describeForChain(
         const APlusBIface = new ethers.Interface(APlusB__factory.abi) as unknown as APlusBInterface;
         const allowPUSH0 = chain !== CHAIN_ID_MAPPING.ARBITRUM;
 
+        beforeEach(() => {
+            resetPredeployContracts();
+        });
+
         it('simple', async () => {
             const calls = [
                 createCall(labeledAddress('testContract'), APlusBIface.encodeFunctionData('plus', [10, 20])),
                 createCall(labeledAddress('testContract'), APlusBIface.encodeFunctionData('minus', [10, 20])),
             ];
+            const testContract = (await APlusBFactory.getDeployTransaction()).data;
             const callData = buildRawMulticallContract(calls, {
                 allowPUSH0,
-                predeployContracts: {
-                    testContract: (await APlusBFactory.getDeployTransaction()).data,
-                },
+                predeployContracts: { testContract },
             });
             expect(callData).toMatchSnapshot();
             const res = await provider.call({ data: callData.byteCode });
             expect(res).toMatchSnapshot();
+            expect(callData.byteCode.includes(strip0x(testContract)));
             const result = decodeRawResult(res);
             expect(result).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('plus', result[0].data)).toMatchSnapshot();
@@ -39,8 +46,26 @@ describeForChain(
         });
 
         it('no predeployed', () => {
+            registerPredeployContract('existing-contract', '0x');
             const calls = [createCall(labeledAddress('non-existing'), '0x')];
             expect(() => buildRawMulticallContract(calls)).toThrowError(NoPredeployContractError);
+        });
+
+        it('register predeploy contract', async () => {
+            const calls = [
+                createCall(labeledAddress('my-contract'), APlusBIface.encodeFunctionData('plus', [69, 420])),
+            ];
+            const myContract = (await APlusBFactory.getDeployTransaction()).data;
+            registerPredeployContract('my-contract', myContract);
+            const callData = buildRawMulticallContract(calls, {
+                allowPUSH0,
+            });
+            expect(callData).toMatchSnapshot();
+            expect(callData.byteCode.includes(strip0x(myContract)));
+            const res = await provider.call({ data: callData.byteCode });
+            expect(res).toMatchSnapshot();
+            const result = decodeRawResult(res);
+            expect(result).toMatchSnapshot();
         });
     }
 );

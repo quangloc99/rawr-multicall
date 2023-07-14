@@ -6,6 +6,6 @@ export function registerPredeployContract(label: LabeledAddress['label'], byteco
     registeredPredeployContracts[label] = bytecode;
 }
 
-export function resetPredeployContract() {
+export function resetPredeployContracts() {
     registeredPredeployContracts = {};
 }
