@@ -1,6 +1,6 @@
-import { Bytes, RawMulticallError, Result } from '@raw-multicall/core';
+import { Bytes, RawMulticallError } from '@raw-multicall/core';
 import { BigNumber } from 'ethers';
-import type { ErrorFragment } from '@ethersproject/abi';
+import type { ErrorFragment, Result } from '@ethersproject/abi';
 
 export class NoFragmentFoundError extends RawMulticallError {
     constructor(
