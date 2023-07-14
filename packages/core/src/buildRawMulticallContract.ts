@@ -5,12 +5,13 @@ import { buildContract, InstructionContextParams } from './buildContract';
 import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START, WORD_SIZE_bytes } from './constants';
 import { CalldataJoiner, groupedCalldataJoiner } from './CalldataJoiner';
 import { prefixSum, zip } from './util';
-import { assertDefined } from './errors';
-import { Address } from './Address';
+import { assertDefined, NoPredeployContractError } from './errors';
+import { Address, LabeledAddress } from './Address';
+import { registeredPredeployContracts } from './registerPredeployContract';
 
 export type BuildRawMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
-    predeployContracts?: Partial<Record<string, Bytes>>;
+    predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes>>;
 };
 
 export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
@@ -28,6 +29,9 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const { calldataJoiner = groupedCalldataJoiner, predeployContracts = {} } = params ?? {};
     const instructions: ins.Instruction[] = [];
 
+    const lookupPredeployContract = (label: LabeledAddress['label']) =>
+        predeployContracts[label] ?? registeredPredeployContracts[label];
+
     const LABELS = {
         // This label will be pushed in the very end.
         dataStart: 'data-start',
@@ -44,13 +48,13 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
             )
         )
     );
-    const usedPredeployContracts = new Map<string, { bytecode: Bytes; id: number }>(
+    const usedPredeployContracts = new Map<LabeledAddress['label'], { bytecode: Bytes; id: number }>(
         uniqueLabels.map((label, id) => {
-            const res = predeployContracts[label];
+            const res = lookupPredeployContract(label);
             return [
                 label,
                 {
-                    bytecode: assertDefined(res, `There is no predeploy contract with label ${label}`),
+                    bytecode: assertDefined(res, () => new NoPredeployContractError(label)),
                     id,
                 },
             ];

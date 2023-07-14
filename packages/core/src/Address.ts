@@ -6,13 +6,13 @@ export type AddressString = {
 
 export type LabeledAddress = {
     type: 'labeled';
-    label: string;
+    label: string | symbol;
 };
 
 export type Address = AddressString | LabeledAddress;
 export type AddressOrRawAddress = Address | RawAddressString;
 
-export const labeledAddress = (label: string): LabeledAddress => ({
+export const labeledAddress = (label: LabeledAddress['label']): LabeledAddress => ({
     type: 'labeled',
     label,
 });
