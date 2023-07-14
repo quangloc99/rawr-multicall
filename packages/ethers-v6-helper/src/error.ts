@@ -1,13 +1,27 @@
-import { Bytes } from '@raw-multicall/core';
+import { Bytes, RawMulticallError } from '@raw-multicall/core';
+import { ErrorFragment } from 'ethers';
 
-export class NoFragmentFoundError extends Error {
+export class NoFragmentFoundError extends RawMulticallError {
     constructor(
         readonly data: Bytes,
-        message: string = 'No fragment found for error',
+        message: string = `No error fragment found for reverted data "${data}"`,
         options?: ErrorOptions
     ) {
         super(message, options);
+    }
+}
 
-        Object.setPrototypeOf(this, NoFragmentFoundError.prototype);
+export class ContractError extends RawMulticallError {
+    constructor(
+        readonly fragment: ErrorFragment,
+        readonly decodedParams: unknown[],
+        readonly data: Bytes,
+        options?: ErrorOptions
+    ) {
+        super(`${fragment.name}(${ContractError.joinParams(decodedParams)})`, options);
+    }
+
+    static joinParams(params: unknown[]) {
+        return params.map((value) => (typeof value == 'bigint' ? value : JSON.stringify(value))).join(', ');
     }
 }
