@@ -14,10 +14,13 @@
         "build": "yarn tsc -p tsconfig.build.json",
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
-        "compile-contracts": "yarn hardhat compile",
+        "compile-contracts-ethers-v6": "TARGET=ethers-v6 yarn hardhat compile",
+        "compile-contracts-ethers-v5": "TARGET=ethers-v5 yarn hardhat compile",
+        "compile-contracts": "yarn compile-contracts-ethers-v6 --force && yarn compile-contracts-ethers-v5 --force",
         "prepack": "yarn build && yarn compile-contracts"
     },
     "devDependencies": {
+        "@typechain/ethers-v5": "^11.0.0",
         "@typechain/ethers-v6": "^0.4.0",
         "@typechain/hardhat": "^8.0.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",

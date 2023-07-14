@@ -11,14 +11,14 @@ export class NoFragmentFoundError extends RawMulticallError {
     }
 }
 
-export class ContractError extends RawMulticallError {
+export class EthersV6ContractError extends RawMulticallError {
     constructor(
         readonly fragment: ErrorFragment,
         readonly decodedParams: unknown[],
         readonly data: Bytes,
         options?: ErrorOptions
     ) {
-        super(`${fragment.name}(${ContractError.joinParams(decodedParams)})`, options);
+        super(`${fragment.name}(${EthersV6ContractError.joinParams(decodedParams)})`, options);
     }
 
     static joinParams(params: unknown[]) {
