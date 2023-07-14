@@ -1,6 +1,6 @@
 import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
-import { APlusB__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
+import { APlusB__factory, TestContract__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
 import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
 import {
     labeledAddress,
@@ -18,6 +18,7 @@ describeForChain(
     (rpcUrl, chain) => {
         const provider = new ethers.JsonRpcProvider(rpcUrl);
         const APlusBFactory = new APlusB__factory();
+        const TestContractFactory = new TestContract__factory();
         const APlusBIface = new ethers.Interface(APlusB__factory.abi) as unknown as APlusBInterface;
         const allowPUSH0 = chain !== CHAIN_ID_MAPPING.ARBITRUM;
 
@@ -38,7 +39,7 @@ describeForChain(
             expect(callData).toMatchSnapshot();
             const res = await provider.call({ data: callData.byteCode });
             expect(res).toMatchSnapshot();
-            expect(callData.byteCode.includes(strip0x(testContract)));
+            expect(callData.byteCode.includes(strip0x(testContract))).toBeTruthy();
             const result = decodeRawResult(res);
             expect(result).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('plus', result[0].data)).toMatchSnapshot();
@@ -61,11 +62,27 @@ describeForChain(
                 allowPUSH0,
             });
             expect(callData).toMatchSnapshot();
-            expect(callData.byteCode.includes(strip0x(myContract)));
+            expect(callData.byteCode.includes(strip0x(myContract))).toBeTruthy();
             const res = await provider.call({ data: callData.byteCode });
             expect(res).toMatchSnapshot();
             const result = decodeRawResult(res);
             expect(result).toMatchSnapshot();
+        });
+
+        it('strip unused contract', async () => {
+            const aPlusB = (await APlusBFactory.getDeployTransaction()).data;
+            const testContract = (await TestContractFactory.getDeployTransaction()).data;
+            registerPredeployContract('a-plus-b', aPlusB);
+            registerPredeployContract('test-contract', testContract);
+
+            const calldata1 = buildRawMulticallContract([createCall(labeledAddress('a-plus-b'), '0x')]);
+            const calldata2 = buildRawMulticallContract([createCall(labeledAddress('test-contract'), '0x')]);
+
+            expect(calldata1.byteCode.includes(strip0x(aPlusB))).toBeTruthy();
+            expect(calldata1.byteCode.includes(strip0x(testContract))).toBeFalsy();
+
+            expect(calldata2.byteCode.includes(strip0x(aPlusB))).toBeFalsy();
+            expect(calldata2.byteCode.includes(strip0x(testContract))).toBeTruthy();
         });
     }
 );
