@@ -1,12 +1,15 @@
 pragma solidity ^0.8.17;
 
 contract ThrowError {
-    function justRevert(string calldata str) public pure {
-        revert(str);
+    function justRevert(string memory str) public pure {
+        assembly {
+            let len := mload(str)
+            revert(add(str, 32), len)
+        }
     }
 
     function revertError(string calldata str) public pure {
-        require(false, str);
+        revert(str);
     }
 
     error CustomError(uint256 number);
