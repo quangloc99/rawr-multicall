@@ -2,7 +2,13 @@ import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
 import { APlusB__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
 import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
-import { labeledAddress, buildRawMulticallContract, createCall, decodeRawResult } from '../src';
+import {
+    labeledAddress,
+    buildRawMulticallContract,
+    createCall,
+    decodeRawResult,
+    NoPredeployContractError,
+} from '../src';
 
 describeForChain(
     (chain: number) => `Test predeploy contracts for chain ${chain}`,
@@ -30,6 +36,11 @@ describeForChain(
             expect(result).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('plus', result[0].data)).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('minus', result[1].data)).toMatchSnapshot();
+        });
+
+        it('no predeployed', () => {
+            const calls = [createCall(labeledAddress('non-existing'), '0x')];
+            expect(() => buildRawMulticallContract(calls)).toThrowError(NoPredeployContractError);
         });
     }
 );
