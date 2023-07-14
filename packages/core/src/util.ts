@@ -1,4 +1,6 @@
+import { assert } from './errors';
 export function toHex(num: number, byteSize = 1) {
+    assert(num >= 0 && Math.floor(num) == num, 'To hex only accept positive integer.');
     let res = num.toString(16).padStart(byteSize * 2, '0');
     if (res.length % 2 == 1) res = '0' + res;
     return res;

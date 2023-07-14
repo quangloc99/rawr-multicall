@@ -86,7 +86,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     );
 
     // deploy contract and save to memory
-    for (const { offset, size, groupId } of joinedPredeployContractsByteCode.parts) {
+    for (const [id, { offset, size }] of joinedPredeployContractsByteCode.parts.entries()) {
         // deploy contract
         instructions.push(
             ins.PUSH_NUMBER(size),
@@ -97,7 +97,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         // stack state: [contract_address]
 
         // save to memory
-        instructions.push(ins.MSTORE_OFFSET(predeployContractAddressesOffset + WORD_SIZE_bytes * groupId));
+        instructions.push(ins.MSTORE_OFFSET(predeployContractAddressesOffset + WORD_SIZE_bytes * id));
         // stack state: []
     }
 
