@@ -1966,13 +1966,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@raw-multicall/test-helper@workspace:packages/test-helper"
   dependencies:
+    "@typechain/ethers-v6": ^0.4.0
+    "@typechain/hardhat": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     eslint: ^8.44.0
     eslint-config-prettier: ^8.8.0
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
+    ethers: ^6.6.3
+    hardhat: ^2.16.1
     prettier: ^3.0.0
+    typechain: ^8.2.0
     typescript: ^5.1.6
   languageName: unknown
   linkType: soft

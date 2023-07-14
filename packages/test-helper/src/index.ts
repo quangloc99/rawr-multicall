@@ -4,6 +4,7 @@ import { RPC_URL } from './rpc-url';
 
 export { testEnv, RPC_URL, CHAIN_ID_MAPPING };
 export * from './jest.config';
+export * as testData from './test-data';
 
 export function describeForChain(
     ...params:

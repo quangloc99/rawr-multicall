@@ -1,6 +1,7 @@
 import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
-import { APlusB__factory, APlusB } from './typechain-types';
+import { APlusB__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
+import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
 import { labeledAddress, buildRawMulticallContract, createCall, decodeRawResult } from '../src';
 
 describeForChain(
@@ -8,7 +9,7 @@ describeForChain(
     (rpcUrl, chain) => {
         const provider = new ethers.JsonRpcProvider(rpcUrl);
         const APlusBFactory = new APlusB__factory();
-        const APlusBIface = new ethers.Interface(APlusB__factory.abi) as APlusB['interface'];
+        const APlusBIface = new ethers.Interface(APlusB__factory.abi) as unknown as APlusBInterface;
         const allowPUSH0 = chain !== CHAIN_ID_MAPPING.ARBITRUM;
 
         it('simple', async () => {

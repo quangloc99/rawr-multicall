@@ -3,20 +3,33 @@
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.js",
+    "files": [
+        "dist",
+        "src",
+        "artifacts",
+        "typechain-types-ethers-v6"
+    ],
     "scripts": {
         "typecheck": "yarn tsc --noEmit",
         "build": "yarn tsc -p tsconfig.build.json",
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
-        "lint": "yarn lint:nofix --fix"
+        "lint": "yarn lint:nofix --fix",
+        "compile-contracts": "yarn hardhat compile",
+        "prepack": "yarn build && yarn compile-contracts"
     },
     "devDependencies": {
+        "@typechain/ethers-v6": "^0.4.0",
+        "@typechain/hardhat": "^8.0.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
         "eslint": "^8.44.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-prettier": "^5.0.0",
         "eslint-plugin-unused-imports": "^3.0.0",
+        "ethers": "^6.6.3",
+        "hardhat": "^2.16.1",
         "prettier": "^3.0.0",
+        "typechain": "^8.2.0",
         "typescript": "^5.1.6"
     }
 }

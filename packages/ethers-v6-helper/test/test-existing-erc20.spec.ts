@@ -1,38 +1,13 @@
 import { createEthersV6Call } from '../src';
 import { buildRawMulticallContract, decodeResult, Bytes } from '@raw-multicall/core';
-import { CHAIN_ID_MAPPING, describeForChain } from '@raw-multicall/test-helper';
+import { CHAIN_ID_MAPPING, describeForChain, testData } from '@raw-multicall/test-helper';
 import { BaseContract, JsonRpcProvider } from 'ethers';
-import { ERC20, ERC20__factory } from './typechain-types';
+import { ERC20, ERC20__factory } from '@raw-multicall/test-helper/typechain-types-ethers-v6';
 
-const TEST_DATA: Record<
-    number,
-    {
-        blockNumber: number;
-        tokenAddresses: string[];
-        holders: string[];
-    }
-> = {
-    [CHAIN_ID_MAPPING.ETHEREUM]: {
-        blockNumber: 17670778,
-        tokenAddresses: [
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
-            '0x808507121b80c02388fad14726482e061b8da827', // pendle
-        ],
-        holders: ['0xa3a7b6f88361f48403514059f1f16c8e78d60eec', '0x28c6c06298d514db089934071355e5743bf21d60'],
-    },
-    [CHAIN_ID_MAPPING.ARBITRUM]: {
-        blockNumber: 110135034,
-        tokenAddresses: [
-            '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // usdt,
-            '0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8', // pendle
-        ],
-        holders: ['0xb38e8c17e38363af6ebdcb3dae12e0243582891d', '0xf89d7b9c864f589bbf53a82105107622b35eaa40'],
-    },
-};
 describeForChain(
     (chain: number) => `buildRawMulticallContract for chain ${chain}`,
     (rpcUrl: string, chain: number) => {
-        const CUR_TEST_DATA = TEST_DATA[chain];
+        const CUR_TEST_DATA = testData.ERC20[chain];
 
         let provider: JsonRpcProvider;
         const blockTag = CUR_TEST_DATA.blockNumber;

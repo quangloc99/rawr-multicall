@@ -3,11 +3,11 @@ import { HardhatUserConfig } from 'hardhat/config';
 
 const config: HardhatUserConfig = {
     paths: {
-        sources: 'test/contracts',
-        artifacts: 'test/artifacts',
+        sources: 'test-contracts',
+        artifacts: 'artifacts',
     },
     typechain: {
-        outDir: 'test/typechain-types',
+        outDir: 'typechain-types-ethers-v6',
     },
     solidity: {
         version: '0.8.17',
