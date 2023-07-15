@@ -1,3 +1,2 @@
 artifacts
-typechain-types-ethers-v6
-typechain-types-ethers-v5
+ethers-v6-contracts/typechain-types

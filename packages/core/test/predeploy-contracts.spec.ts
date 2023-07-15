@@ -4,10 +4,10 @@ import {
     APlusB__factory,
     TestContract__factory,
     ThrowError__factory,
-} from '@raw-multicall/test-helper/typechain-types-ethers-v6';
-import { APlusBInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/APlusB';
-import { TestContractInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/TestContract';
-import { ThrowErrorInterface } from '@raw-multicall/test-helper/typechain-types-ethers-v6/ThrowError';
+} from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { APlusBInterface } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/APlusB';
+import { TestContractInterface } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/TestContract';
+import { ThrowErrorInterface } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/ThrowError';
 import {
     labeledAddress,
     buildRawMulticallContract,

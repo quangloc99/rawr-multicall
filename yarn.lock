@@ -1944,6 +1944,7 @@ __metadata:
   dependencies:
     "@raw-multicall/core": "workspace:*"
     "@raw-multicall/test-helper": "workspace:*"
+    "@typechain/ethers-v5": ^11.0.0
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^6.0.0
@@ -1990,7 +1991,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@raw-multicall/test-helper@workspace:packages/test-helper"
   dependencies:
-    "@typechain/ethers-v5": ^11.0.0
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^6.0.0

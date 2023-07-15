@@ -1,10 +1,12 @@
 {
     "name": "@raw-multicall/ethers-v5-helper",
+    "version": "1.0.0",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "devDependencies": {
         "@raw-multicall/test-helper": "workspace:*",
+        "@typechain/ethers-v5": "^11.0.0",
         "@typechain/ethers-v6": "^0.4.0",
         "@typechain/hardhat": "^8.0.0",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -25,7 +27,9 @@
         "build": "yarn tsc -p tsconfig.build.json",
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
-        "test": "yarn jest"
+        "test": "yarn jest",
+        "compile-contracts-ethers-v5": "yarn hardhat compile",
+        "compile-contracts": "yarn compile-contracts-ethers-v5 --force"
     },
     "dependencies": {
         "@raw-multicall/core": "workspace:*",
