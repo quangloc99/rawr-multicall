@@ -7,7 +7,7 @@ export type CreateEthersV6CallParams = {
     withAddress?: AddressOrRawAddress;
 };
 
-export function createEthersV6Call<C extends BaseContract, const Method extends MethodNames<C>>(
+export function createEthersV5Call<C extends BaseContract, const Method extends MethodNames<C>>(
     contract: C,
     methodName: Method,
     methodParams: MethodParameters<C, Method>,
