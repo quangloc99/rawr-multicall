@@ -1,4 +1,4 @@
-import { Bytes, byteLength, concat, strip0x } from './bytes';
+import { Bytes } from './Bytes';
 
 export type JoinedCalldata = {
     result: Bytes;
@@ -15,11 +15,11 @@ export type CalldataJoiner = {
 
 export const basicCalldataJoiner = {
     join(data: Bytes[]) {
-        const result = concat(data);
+        const result = Bytes.concat(data);
         const parts: JoinedCalldata['parts'] = [];
         let currentOffset = 0;
         for (const [id, d] of data.entries()) {
-            const size = byteLength(d);
+            const size = d.length;
             parts.push({ offset: currentOffset, size, groupId: id });
             currentOffset += size;
         }
@@ -29,14 +29,14 @@ export const basicCalldataJoiner = {
 
 export const groupedCalldataJoiner: CalldataJoiner = {
     join(data: Bytes[]) {
-        const dataGroup = new Map<Bytes, number[]>();
+        const dataGroup = new Map<string, { group: number[]; bytes: Bytes }>();
         for (let i = 0; i < data.length; ++i) {
-            const d = strip0x(data[i]);
-            let g = dataGroup.get(d);
+            const d = data[i];
+            let g = dataGroup.get(d.data);
             if (g == undefined) {
-                dataGroup.set(d, (g = []));
+                dataGroup.set(d.data, (g = { group: [], bytes: d }));
             }
-            g.push(i);
+            g.group.push(i);
         }
 
         const compressedData: Bytes[] = [];
@@ -44,14 +44,14 @@ export const groupedCalldataJoiner: CalldataJoiner = {
         const parts = data.map(() => dummyPart);
 
         let currentOffset = 0;
-        for (const [groupId, [d, group]] of Array.from(dataGroup.entries()).entries()) {
+        for (const [groupId, [, { group, bytes: d }]] of Array.from(dataGroup.entries()).entries()) {
             compressedData.push(d);
-            const size = byteLength(d);
+            const size = d.length;
             for (const i of group) {
                 parts[i] = { offset: currentOffset, size, groupId };
             }
             currentOffset += size;
         }
-        return { result: concat(compressedData), parts };
+        return { result: Bytes.concat(compressedData), parts };
     },
 };

@@ -1,4 +1,4 @@
-import { Bytes } from './bytes';
+import { Bytes } from './Bytes';
 import { Address, castToAddress, AddressOrRawAddress } from './Address';
 
 export type Call<ResultType, ErrorType> = {
@@ -8,11 +8,11 @@ export type Call<ResultType, ErrorType> = {
     decodeError(data: Bytes): ErrorType;
 };
 
-export function createCall(contractAddress: AddressOrRawAddress, data: Bytes): Call<Bytes, Bytes> {
+export function createCall(contractAddress: AddressOrRawAddress, data: Bytes | string): Call<string, string> {
     return {
         getContractAddress: () => castToAddress(contractAddress),
-        getData: () => data,
-        decodeResult: (data) => data,
-        decodeError: (data) => data,
+        getData: () => Bytes.from(data),
+        decodeResult: (data) => data.toString(),
+        decodeError: (data) => data.toString(),
     };
 }

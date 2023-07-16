@@ -1,5 +1,6 @@
-import { Bytes } from './bytes';
+import { Bytes } from './Bytes';
 import { Call } from './Call';
+import { RawMulticallError } from './errors';
 
 export type RawResult = {
     success: boolean;
@@ -7,14 +8,18 @@ export type RawResult = {
 };
 
 export type Result<ResultType, ErrorType> =
-    | {
-          success: true;
-          result: ResultType;
-      }
-    | {
-          success: false;
-          error: ErrorType;
-      };
+    | { success: true; result: ResultType }
+    | { success: false; error: ErrorType };
+
+export function unwrap<ReturnType>(r: Result<ReturnType, unknown>): ReturnType {
+    if (r.success) return r.result;
+    throw r.error;
+}
+
+export function getResultError<ErrorType>(r: Result<unknown, ErrorType>): ErrorType {
+    if (!r.success) return r.error;
+    throw new RawMulticallError('can not get the error of successful result');
+}
 
 export type ResultOfCall<C extends Call<unknown, unknown>> = C extends Call<infer ReturnType, infer ErrorType>
     ? Result<ReturnType, ErrorType>

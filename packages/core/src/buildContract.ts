@@ -1,5 +1,5 @@
 import { InstructionContext, PreprocessingInstructionContext } from './InstructionContext';
-import { Bytes, concat, add0x } from './bytes';
+import { Bytes } from './Bytes';
 import { assert, assertDefined } from './errors';
 import * as ins from './instructions';
 
@@ -52,7 +52,7 @@ export function buildContract(
         splittedByteCodes.push(instruction.generate(instructionContext));
     }
 
-    const byteCode = add0x(concat(splittedByteCodes));
+    const byteCode = Bytes.concat(splittedByteCodes);
     return {
         splittedByteCodes,
         byteCode,

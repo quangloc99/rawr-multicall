@@ -12,11 +12,12 @@ import {
     labeledAddress,
     buildRawMulticallContract,
     createCall,
-    decodeRawResult,
     NoPredeployContractError,
     resetPredeployContracts,
     registerPredeployContract,
-    strip0x,
+    decodeResult,
+    unwrap,
+    getResultError,
 } from '../src';
 
 describeForChain(
@@ -48,13 +49,13 @@ describeForChain(
                 predeployContracts: { testContract },
             });
             expect(callData).toMatchSnapshot();
-            const res = await provider.call({ data: callData.byteCode });
+            const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
-            expect(callData.byteCode.includes(strip0x(testContract))).toBeTruthy();
-            const result = decodeRawResult(res);
+            expect(callData.byteCode.includes(testContract)).toBeTruthy();
+            const result = decodeResult(calls, res);
             expect(result).toMatchSnapshot();
-            expect(APlusBIface.decodeFunctionResult('plus', result[0].data)).toMatchSnapshot();
-            expect(APlusBIface.decodeFunctionResult('minus', result[1].data)).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('plus', unwrap(result[0]))).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('minus', unwrap(result[1]))).toMatchSnapshot();
         });
 
         it('complex', async () => {
@@ -84,17 +85,17 @@ describeForChain(
             });
 
             expect(callData).toMatchSnapshot();
-            const res = await provider.call({ data: callData.byteCode });
-            const decodedResult = decodeRawResult(res);
+            const res = await provider.call({ data: callData.byteCode.toString() });
+            const decodedResult = decodeResult(calls, res);
             expect(res).toMatchSnapshot();
             expect(decodedResult).toMatchSnapshot();
-            expect(APlusBIface.decodeFunctionResult('plus', decodedResult[0].data)).toMatchSnapshot();
-            expect(APlusBIface.decodeFunctionResult('plus', decodedResult[1].data)).toMatchSnapshot();
-            expect(APlusBIface.decodeFunctionResult('minus', decodedResult[2].data)).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('plus', unwrap(decodedResult[0]))).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('plus', unwrap(decodedResult[1]))).toMatchSnapshot();
+            expect(APlusBIface.decodeFunctionResult('minus', unwrap(decodedResult[2]))).toMatchSnapshot();
 
-            expect(TestContractInterface.decodeFunctionResult('compare', decodedResult[3].data)).toMatchSnapshot();
-            expect(TestContractInterface.decodeFunctionResult('swapXY', decodedResult[4].data)).toMatchSnapshot();
-            expect(TestContractInterface.decodeFunctionResult('hash', decodedResult[5].data)).toMatchSnapshot();
+            expect(TestContractInterface.decodeFunctionResult('compare', unwrap(decodedResult[3]))).toMatchSnapshot();
+            expect(TestContractInterface.decodeFunctionResult('swapXY', unwrap(decodedResult[4]))).toMatchSnapshot();
+            expect(TestContractInterface.decodeFunctionResult('hash', unwrap(decodedResult[5]))).toMatchSnapshot();
         });
 
         it('no predeployed', () => {
@@ -113,10 +114,10 @@ describeForChain(
                 allowPUSH0,
             });
             expect(callData).toMatchSnapshot();
-            expect(callData.byteCode.includes(strip0x(myContract))).toBeTruthy();
-            const res = await provider.call({ data: callData.byteCode });
+            expect(callData.byteCode.includes(myContract)).toBeTruthy();
+            const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
-            const result = decodeRawResult(res);
+            const result = decodeResult(calls, res);
             expect(result).toMatchSnapshot();
         });
 
@@ -129,11 +130,11 @@ describeForChain(
             const calldata1 = buildRawMulticallContract([createCall(labeledAddress('a-plus-b'), '0x')]);
             const calldata2 = buildRawMulticallContract([createCall(labeledAddress('test-contract'), '0x')]);
 
-            expect(calldata1.byteCode.includes(strip0x(aPlusB))).toBeTruthy();
-            expect(calldata1.byteCode.includes(strip0x(testContract))).toBeFalsy();
+            expect(calldata1.byteCode.includes(aPlusB)).toBeTruthy();
+            expect(calldata1.byteCode.includes(testContract)).toBeFalsy();
 
-            expect(calldata2.byteCode.includes(strip0x(aPlusB))).toBeFalsy();
-            expect(calldata2.byteCode.includes(strip0x(testContract))).toBeTruthy();
+            expect(calldata2.byteCode.includes(aPlusB)).toBeFalsy();
+            expect(calldata2.byteCode.includes(testContract)).toBeTruthy();
         });
 
         it('throw error', async () => {
@@ -154,12 +155,14 @@ describeForChain(
 
             const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
-            const res = await provider.call({ data: calldata.byteCode });
-            const decodedRes = decodeRawResult(res);
+            const res = await provider.call({ data: calldata.byteCode.toString() });
+            const decodedRes = decodeResult(calls, res);
             expect(decodedRes).toMatchSnapshot();
-            expect(ThrowErrorInterface.decodeErrorResult('Error', decodedRes[1].data)).toMatchSnapshot();
-            expect(ThrowErrorInterface.decodeErrorResult('CustomError', decodedRes[2].data)).toMatchSnapshot();
-            expect(ThrowErrorInterface.decodeErrorResult('Panic', decodedRes[3].data)).toMatchSnapshot();
+            expect(ThrowErrorInterface.decodeErrorResult('Error', getResultError(decodedRes[1]))).toMatchSnapshot();
+            expect(
+                ThrowErrorInterface.decodeErrorResult('CustomError', getResultError(decodedRes[2]))
+            ).toMatchSnapshot();
+            expect(ThrowErrorInterface.decodeErrorResult('Panic', getResultError(decodedRes[3]))).toMatchSnapshot();
         });
     }
 );

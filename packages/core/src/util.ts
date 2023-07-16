@@ -6,6 +6,10 @@ export function toHex(num: number, byteSize = 1) {
     return res;
 }
 
+export function byte(num: number) {
+    return toHex(num, 1);
+}
+
 export function byteSize(num: number): number {
     return toHex(num).length / 2;
 }

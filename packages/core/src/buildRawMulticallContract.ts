@@ -1,5 +1,5 @@
 import { Call } from './Call';
-import { byteLength, Bytes } from './bytes';
+import { Bytes } from './Bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START, WORD_SIZE_bytes } from './constants';
@@ -11,7 +11,7 @@ import { registeredPredeployContracts } from './registerPredeployContract';
 
 export type BuildRawMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
-    predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes>>;
+    predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes | string>>;
 };
 
 export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
@@ -30,7 +30,12 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const instructions: ins.Instruction[] = [];
 
     const lookupPredeployContract = (label: LabeledAddress['label']) =>
-        predeployContracts[label] ?? registeredPredeployContracts[label];
+        Bytes.from(
+            assertDefined(
+                predeployContracts[label] ?? registeredPredeployContracts[label],
+                () => new NoPredeployContractError(label)
+            )
+        );
 
     const LABELS = {
         // This label will be pushed in the very end.
@@ -50,14 +55,8 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     );
     const usedPredeployContracts = new Map<LabeledAddress['label'], { bytecode: Bytes; id: number }>(
         uniqueLabels.map((label, id) => {
-            const res = lookupPredeployContract(label);
-            return [
-                label,
-                {
-                    bytecode: assertDefined(res, () => new NoPredeployContractError(label)),
-                    id,
-                },
-            ];
+            const bytecode = lookupPredeployContract(label);
+            return [label, { bytecode, id }];
         })
     );
 
@@ -65,14 +64,14 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const joinedPredeployContractsByteCode = calldataJoiner.join(
         Array.from(usedPredeployContracts.values(), ({ bytecode }) => bytecode)
     );
-    const totalDataSize = byteLength(joinedCalldata.result) + byteLength(joinedPredeployContractsByteCode.result);
+    const totalDataSize = joinedCalldata.result.length + joinedPredeployContractsByteCode.result.length;
 
     // memory layout
     const [predeployContractBytecodeOffset, dataOffset, predeployContractAddressesOffset, RETURN_DATA_START] =
         prefixSum([
             FREE_MEMORY_START,
-            byteLength(joinedPredeployContractsByteCode.result),
-            byteLength(joinedCalldata.result),
+            joinedPredeployContractsByteCode.result.length,
+            joinedCalldata.result.length,
             usedPredeployContracts.size * WORD_SIZE_bytes,
         ]);
 

@@ -14,7 +14,7 @@ describeForChain(
         let provider: JsonRpcProvider;
         const blockTag = CUR_TEST_DATA.blockNumber;
 
-        const doSend = (data: Bytes) => provider.call({ data, blockTag });
+        const doSend = (data: Bytes | string) => provider.call({ data: data.toString(), blockTag });
         const allowPUSH0 = chain != CHAIN_ID_MAPPING.ARBITRUM;
 
         beforeAll(() => {
