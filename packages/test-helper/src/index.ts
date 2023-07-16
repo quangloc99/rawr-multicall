@@ -20,3 +20,10 @@ export function describeForChain(
         (isAllowedChain ? describe : describe.skip)(name, () => callback(RPC_URL[chain], chain));
     }
 }
+
+expect.addSnapshotSerializer({
+    // eslint-disable-next-line
+    test: (arg) => typeof arg == 'object' && arg?.constructor?.name === 'Bytes',
+    // eslint-disable-next-line
+    serialize: (arg: unknown) => JSON.stringify((arg as any).toString()),
+});
