@@ -18,14 +18,18 @@ export function buildRawMulticallContract<Calls extends readonly Call<unknown, u
     calls: Calls,
     params?: BuildRawMulticallContractParams
 ) {
-    const instructions = buildRawMulticallInstructions(calls, params);
-    return buildContract(instructions, params);
+    const { instructions, totalValue } = buildRawMulticallInstructions(calls, params);
+    const contractData = buildContract(instructions, params);
+    return {
+        ...contractData,
+        totalValue,
+    };
 }
 
 export function buildRawMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
     calls: Calls,
     params?: BuildRawMulticallContractParams
-): ins.Instruction[] {
+): { instructions: ins.Instruction[]; totalValue: number } {
     const { calldataJoiner = groupedCalldataJoiner, predeployContracts = {} } = params ?? {};
     const instructions: ins.Instruction[] = [];
 
@@ -42,13 +46,16 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         dataStart: 'data-start',
     };
 
-    const callData = calls.map((call) => ({
+    // extract data here to avoid multiple calls
+    const callsData = calls.map((call) => ({
         data: call.getData(),
         contractAddress: call.getContractAddress(),
+        gasLimit: call.getGasLimit(),
+        value: call.getValue(),
     }));
     const uniqueLabels = Array.from(
         new Set(
-            callData.flatMap(({ contractAddress }) =>
+            callsData.flatMap(({ contractAddress }) =>
                 contractAddress.type == 'labeled' ? [contractAddress.label] : []
             )
         )
@@ -60,7 +67,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         })
     );
 
-    const joinedCalldata = calldataJoiner.join(callData.map(({ data }) => data));
+    const joinedCalldata = calldataJoiner.join(callsData.map(({ data }) => data));
     const joinedPredeployContractsByteCode = calldataJoiner.join(
         Array.from(usedPredeployContracts.values(), ({ bytecode }) => bytecode)
     );
@@ -115,11 +122,13 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         return [ins.MLOAD_OFFSET(id * WORD_SIZE_bytes + predeployContractAddressesOffset)];
     };
 
-    for (const [call, currentPart] of zip(callData, joinedCalldata.parts)) {
+    for (const [callData, currentPart] of zip(callsData, joinedCalldata.parts)) {
         const curDataOffset = dataOffset + currentPart.offset;
         const curDataSize = currentPart.size;
 
         // stack: [sign_bit, length_shift, length_size, return_data_end]
+        const gasLimit = callData.gasLimit;
+        const value = callData.value;
 
         // make call
         instructions.push(
@@ -127,9 +136,9 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
             ins.PUSH0, // retOffset
             ins.PUSH_NUMBER(curDataSize), // argsSize
             ins.PUSH_NUMBER(curDataOffset), // argsOffset
-            ins.PUSH0, // value
-            ...wrappedPushAddress(call.contractAddress),
-            ins.GAS,
+            ins.PUSH_NUMBER(value), // value
+            ...wrappedPushAddress(callData.contractAddress),
+            gasLimit == undefined ? ins.GAS : ins.PUSH_NUMBER(gasLimit), // gas
             ins.CALL
         );
 
@@ -204,5 +213,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     instructions.push(ins.LABEL(LABELS.dataStart, { isEmpty: true }));
     instructions.push(ins.VERBATIM(joinedPredeployContractsByteCode.result));
     instructions.push(ins.VERBATIM(joinedCalldata.result));
-    return instructions;
+
+    const totalValue = callsData.map(({ value }) => value).reduce((a, b) => a + b, 0);
+    return { instructions, totalValue };
 }
