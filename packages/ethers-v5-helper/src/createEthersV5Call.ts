@@ -1,7 +1,12 @@
-import { AddressOrRawAddress, Call, strip0x, add0x, castToAddress } from '@raw-multicall/core';
+import { AddressOrRawAddress, Call, castToAddress, Bytes } from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
-import { NoFragmentFoundError, EthersV5ContractError } from './error';
+import {
+    NoFragmentFoundError,
+    EthersV5ContractError,
+    EthersV5ErrorContractError,
+    EthersV5PanicContractError,
+} from './error';
 
 export type CreateEthersV6CallParams = {
     withAddress?: AddressOrRawAddress;
@@ -14,20 +19,26 @@ export function createEthersV5Call<C extends BaseContract, const Method extends 
     params: CreateEthersV6CallParams = {}
 ): Call<MethodReturnType<C, Method>, unknown> {
     const address = castToAddress(params.withAddress != undefined ? params.withAddress : contract.address);
-    const data = contract.interface.encodeFunctionData(methodName, methodParams);
+    const data = Bytes.from(contract.interface.encodeFunctionData(methodName, methodParams));
     type ReturnType = MethodReturnType<C, Method>;
     return {
         getContractAddress: () => address,
         getData: () => data,
         decodeResult(data): ReturnType {
-            const res = contract.interface.decodeFunctionResult(methodName, data);
+            const res = contract.interface.decodeFunctionResult(methodName, data.toString());
             if (res.length == 1) return res[0] as ReturnType;
             return res as ReturnType;
         },
         decodeError(data): unknown {
             try {
-                const fragment = contract.interface.getError(add0x(strip0x(data).slice(0, 8)));
-                const decodedParams = contract.interface.decodeErrorResult(fragment, add0x(data));
+                if (EthersV5ErrorContractError.checkBytesFragment(data)) {
+                    return new EthersV5ErrorContractError(data);
+                }
+                if (EthersV5PanicContractError.checkBytesFragment(data)) {
+                    return new EthersV5PanicContractError(data);
+                }
+                const fragment = contract.interface.getError(data.slice(0, 4).toString());
+                const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
                 return new EthersV5ContractError(fragment, decodedParams, data);
             } catch (e: unknown) {
                 // The only clue for us that ethers can not decode the error

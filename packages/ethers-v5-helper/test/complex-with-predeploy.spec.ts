@@ -6,7 +6,6 @@ import {
     buildRawMulticallContract,
     resetPredeployContracts,
     registerPredeployContract,
-    strip0x,
     decodeResult,
     assertDefined,
 } from '@raw-multicall/core';
@@ -39,9 +38,9 @@ describeForChain(
                 predeployContracts: { test: testContractByteCode },
             });
             expect(callData).toMatchSnapshot();
-            const res = await provider.call({ data: callData.byteCode });
+            const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
-            expect(callData.byteCode.includes(strip0x(testContractByteCode))).toBeTruthy();
+            expect(callData.byteCode.includes(testContractByteCode)).toBeTruthy();
             const result = decodeResult(calls, res);
             expect(result).toMatchSnapshot();
         });
@@ -79,7 +78,7 @@ describeForChain(
             });
 
             expect(callData).toMatchSnapshot();
-            const res = await provider.call({ data: callData.byteCode });
+            const res = await provider.call({ data: callData.byteCode.toString() });
             const decodedResult = decodeResult(calls, res);
             expect(res).toMatchSnapshot();
             expect(decodedResult).toMatchSnapshot();
@@ -107,7 +106,7 @@ describeForChain(
 
             const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
-            const res = await provider.call({ data: calldata.byteCode });
+            const res = await provider.call({ data: calldata.byteCode.toString() });
             const decodedRes = decodeResult(calls, res);
             expect(decodedRes).toMatchSnapshot();
         });
