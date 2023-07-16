@@ -4,7 +4,7 @@ import { ErrorFragment } from 'ethers';
 export class NoFragmentFoundError extends RawMulticallError {
     constructor(
         readonly data: Bytes,
-        message: string = `No error fragment found for reverted data "${data}"`,
+        message: string = `No error fragment found for reverted data "${data.toString()}"`,
         options?: ErrorOptions
     ) {
         super(message, options);
