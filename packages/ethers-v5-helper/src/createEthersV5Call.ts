@@ -1,4 +1,4 @@
-import { AddressOrRawAddress, Call, castToAddress, Bytes } from '@raw-multicall/core';
+import { AddressOrRawAddress, Call, castToAddress, Bytes, wrapCallParams, CallParams } from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
 import {
@@ -8,7 +8,7 @@ import {
     EthersV5PanicContractError,
 } from './error';
 
-export type CreateEthersV6CallParams = {
+export type CreateEthersV6CallParams = CallParams & {
     withAddress?: AddressOrRawAddress;
 };
 
@@ -49,5 +49,6 @@ export function createEthersV5Call<C extends BaseContract, const Method extends 
                 return e;
             }
         },
+        ...wrapCallParams(params),
     };
 }
