@@ -309,6 +309,7 @@ exports[`buildRawMulticallContract for chain 1 erc20 complex 1`] = `
     "0x",
     "0x06fdde0395d89b41313ce56718160ddd70a08231000000000000000000000000a3a7b6f88361f48403514059f1f16c8e78d60eec70a0823100000000000000000000000028c6c06298d514db089934071355e5743bf21d60",
   ],
+  "totalValue": 0,
 }
 `;
 
@@ -412,6 +413,7 @@ exports[`buildRawMulticallContract for chain 1 erc20 simple 1`] = `
     "0x",
     "0x06fdde03",
   ],
+  "totalValue": 0,
 }
 `;
 
@@ -735,6 +737,7 @@ exports[`buildRawMulticallContract for chain 42161 erc20 complex 1`] = `
     "0x",
     "0x06fdde0395d89b41313ce56718160ddd70a08231000000000000000000000000b38e8c17e38363af6ebdcb3dae12e0243582891d70a08231000000000000000000000000f89d7b9c864f589bbf53a82105107622b35eaa40",
   ],
+  "totalValue": 0,
 }
 `;
 
@@ -838,6 +841,7 @@ exports[`buildRawMulticallContract for chain 42161 erc20 simple 1`] = `
     "0x",
     "0x06fdde03",
   ],
+  "totalValue": 0,
 }
 `;
 

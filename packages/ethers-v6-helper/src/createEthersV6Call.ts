@@ -1,9 +1,9 @@
-import { AddressOrRawAddress, Call, Bytes, castToAddress } from '@raw-multicall/core';
+import { AddressOrRawAddress, Call, Bytes, castToAddress, CallParams, wrapCallParams } from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
 import { NoFragmentFoundError, EthersV6ContractError } from './error';
 
-export type CreateEthersV6CallParams = {
+export type CreateEthersV6CallParams = CallParams & {
     withAddress?: AddressOrRawAddress;
 };
 
@@ -35,5 +35,6 @@ export async function createEthersV6Call<C extends BaseContract, const Method ex
                 return e;
             }
         },
+        ...wrapCallParams(params),
     };
 }

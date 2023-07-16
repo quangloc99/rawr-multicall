@@ -65,7 +65,7 @@ describeForChain(
                     withAddress: labeledAddress('y'),
                 }),
                 await createEthersV6Call(testContract, 'hash', [1], { withAddress: labeledAddress('z') }),
-            ];
+            ] as const;
 
             const callData = buildRawMulticallContract(calls, {
                 allowPUSH0,
