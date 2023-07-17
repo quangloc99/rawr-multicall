@@ -10,14 +10,14 @@ along side with the result.
 
 | Fields    | Size (bytes) |
 | :-------- | ------------ |
-| Padding   | 8            |
 | Gas Limit | 4            |
 | Address   | 20           |
 | Call data | The rest     |
 
-- Padding is zero-filled. It is there to pack gas limit and address in one word.
+- Data is packed tightly together, and won't align to word size.
+- If the call does not specify gas limit, the library will automatically set it to $2^{32} - 1$ before sending.
 - `value` is not required, since we can just use `msg.value` (i.e `CALLVALUE` instruction).
-- `call data` size is not required either, as wel can use `CALLDATASIZE` instruction.
+- `call data` size is not required either, as we can use `CALLDATASIZE` instruction.
 
 ### Output layout for fallback
 
