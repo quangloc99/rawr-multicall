@@ -7,6 +7,8 @@ object "CallThenRevert" {
     }
 
     object "runtime" {
+        // The nice thing is Yul compiler is smart enough to
+        // precalculate the value and plugin the constant itself.
         code {
             function gasLimitSize() -> r { r := 4 }
             function contractAddressSize() -> r { r := 20 }

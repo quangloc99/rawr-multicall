@@ -42,6 +42,16 @@ export class Bytes {
         );
     }
 
+    byteValue(pos: number): number {
+        assert(
+            0 <= pos && pos < this.length,
+            () =>
+                new RangeError('byte position should be a positive integer less than the length of this byte sequence')
+        );
+        pos *= 2;
+        return parseInt(this.data.slice(pos, pos + 2), 16);
+    }
+
     get length() {
         return this.data.length >>> 1;
     }
