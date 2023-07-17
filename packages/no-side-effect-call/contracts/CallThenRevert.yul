@@ -8,25 +8,29 @@ object "CallThenRevert" {
 
     object "runtime" {
         code {
+            function gasLimitSize() -> r { r := 4 }
+            function contractAddressSize() -> r { r := 20 }
+
             calldatacopy(0, 0, calldatasize())
             let gasAndAddressWord := mload(0)
+
             let gasLimit := shr(
                 gasAndAddressWord,
-                224 /* = (32 - 4) * 8 */
+                mul(sub(32, gasLimitSize()), 8)
             )
             let contractAddress := shl(
                 shr(
                     gasAndAddressWord,
-                    32 /* = 4 * 8 */
+                    mul(gasLimitSize(), 8)
                 ),
-                96 /* = (32 - 20) * 8 */
+                mul(sub(32, contractAddressSize()), 8)
             )
             let success := call(
                 gasLimit,
                 contractAddress,
                 callvalue(),
-                24, // calldata offset = 4 + 20
-                sub(calldatasize(), 24), // calldata size
+                add(gasLimitSize(), contractAddressSize()), // calldata offset
+                sub(calldatasize(), add(gasLimitSize(), contractAddressSize())), // calldata size
                 0, // dest offset
                 0 // dest size
             )
@@ -38,9 +42,10 @@ object "CallThenRevert" {
             )
             // put the success byte to the front
             revert(
-                31,
+                sub(32, 1),
                 add(returndatasize(), 1)
             )
+
         }
     }
-  }
+}
