@@ -1,4 +1,12 @@
-import { AddressOrRawAddress, Call, castToAddress, Bytes, wrapCallParams, CallParams } from '@raw-multicall/core';
+import {
+    AddressOrRawAddress,
+    Call,
+    castToAddress,
+    Bytes,
+    wrapCallParams,
+    CallParams,
+    wrapDecodeOutput,
+} from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
 import {
@@ -24,31 +32,33 @@ export function createEthersV5Call<C extends BaseContract, const Method extends 
     return {
         getContractAddress: () => address,
         getData: () => data,
-        decodeResult(data): ReturnType {
-            const res = contract.interface.decodeFunctionResult(methodName, data.toString());
-            if (res.length == 1) return res[0] as ReturnType;
-            return res as ReturnType;
-        },
-        decodeError(data): unknown {
-            try {
-                if (EthersV5ErrorContractError.checkBytesFragment(data)) {
-                    return new EthersV5ErrorContractError(data);
+        ...wrapDecodeOutput({
+            decodeResult(data): ReturnType {
+                const res = contract.interface.decodeFunctionResult(methodName, data.toString());
+                if (res.length == 1) return res[0] as ReturnType;
+                return res as ReturnType;
+            },
+            decodeError(data): unknown {
+                try {
+                    if (EthersV5ErrorContractError.checkBytesFragment(data)) {
+                        return new EthersV5ErrorContractError(data);
+                    }
+                    if (EthersV5PanicContractError.checkBytesFragment(data)) {
+                        return new EthersV5PanicContractError(data);
+                    }
+                    const fragment = contract.interface.getError(data.slice(0, 4).toString());
+                    const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
+                    return new EthersV5ContractError(fragment, decodedParams, data);
+                } catch (e: unknown) {
+                    // The only clue for us that ethers can not decode the error
+                    // is base on the message.
+                    if (e instanceof Error && e.message.includes('no matching error')) {
+                        return new NoFragmentFoundError(data);
+                    }
+                    return e;
                 }
-                if (EthersV5PanicContractError.checkBytesFragment(data)) {
-                    return new EthersV5PanicContractError(data);
-                }
-                const fragment = contract.interface.getError(data.slice(0, 4).toString());
-                const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
-                return new EthersV5ContractError(fragment, decodedParams, data);
-            } catch (e: unknown) {
-                // The only clue for us that ethers can not decode the error
-                // is base on the message.
-                if (e instanceof Error && e.message.includes('no matching error')) {
-                    return new NoFragmentFoundError(data);
-                }
-                return e;
-            }
-        },
+            },
+        }),
         ...wrapCallParams(params),
     };
 }

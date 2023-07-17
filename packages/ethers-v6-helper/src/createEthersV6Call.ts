@@ -1,4 +1,12 @@
-import { AddressOrRawAddress, Call, Bytes, castToAddress, CallParams, wrapCallParams } from '@raw-multicall/core';
+import {
+    AddressOrRawAddress,
+    Call,
+    Bytes,
+    castToAddress,
+    CallParams,
+    wrapCallParams,
+    wrapDecodeOutput,
+} from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
 import { NoFragmentFoundError, EthersV6ContractError } from './error';
@@ -20,21 +28,23 @@ export async function createEthersV6Call<C extends BaseContract, const Method ex
     return {
         getContractAddress: () => address,
         getData: () => data,
-        decodeResult(data): ReturnType {
-            const res = contract.interface.decodeFunctionResult(methodName, data.toString());
-            if (res.length == 1) return res[0] as ReturnType;
-            return res as ReturnType;
-        },
-        decodeError(data): unknown {
-            try {
-                const fragment = contract.interface.getError(data.slice(0, 4).toString());
-                if (!fragment) return new NoFragmentFoundError(data);
-                const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
-                return new EthersV6ContractError(fragment, decodedParams, data);
-            } catch (e) {
-                return e;
-            }
-        },
+        ...wrapDecodeOutput({
+            decodeResult(data): ReturnType {
+                const res = contract.interface.decodeFunctionResult(methodName, data.toString());
+                if (res.length == 1) return res[0] as ReturnType;
+                return res as ReturnType;
+            },
+            decodeError(data): unknown {
+                try {
+                    const fragment = contract.interface.getError(data.slice(0, 4).toString());
+                    if (!fragment) return new NoFragmentFoundError(data);
+                    const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
+                    return new EthersV6ContractError(fragment, decodedParams, data);
+                } catch (e) {
+                    return e;
+                }
+            },
+        }),
         ...wrapCallParams(params),
     };
 }
