@@ -32,14 +32,6 @@ export function decodeResult(
     data: Bytes | string
 ): Result<unknown, unknown>[] {
     return Array.from(zip(calls, decodeRawResult(data)), ([call, { success, data }]) =>
-        success
-            ? {
-                  success: true,
-                  result: call.decodeResult(data),
-              }
-            : {
-                  success: false,
-                  error: call.decodeError(data),
-              }
+        call.decodeOutput(success, data)
     );
 }
