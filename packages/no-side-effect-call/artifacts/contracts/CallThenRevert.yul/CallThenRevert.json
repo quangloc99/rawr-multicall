@@ -1,0 +1,9 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "CallThenRevert",
+  "sourceName": "contracts/CallThenRevert.yul",
+  "abi": [],
+  "bytecode": "0x602c80600a5f395ff3fe365f60803760805f80825160a0601f19360191349082606080831b1c911cf1523d5f60a03e60013d01609ffd",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
