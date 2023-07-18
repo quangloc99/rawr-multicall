@@ -1,4 +1,4 @@
-import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
 import { APlusB__factory, TestContract__factory, ThrowError__factory } from '../ethers-v5-contracts/typechain-types';
 import {
@@ -40,7 +40,7 @@ describeForChain(
             expect(callData).toMatchSnapshot();
             const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
-            expect(callData.byteCode.includes(testContractByteCode)).toBeTruthy();
+            expect(hexStringContains(callData.byteCode, testContractByteCode)).toBeTruthy();
             const result = decodeResult(calls, res);
             expect(result).toMatchSnapshot();
         });

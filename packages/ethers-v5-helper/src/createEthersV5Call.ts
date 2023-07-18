@@ -2,10 +2,11 @@ import {
     AddressOrRawAddress,
     Call,
     castToAddress,
-    Bytes,
     wrapCallParams,
     CallParams,
     wrapDecodeOutput,
+    toBytes,
+    bytesToHexWith0x,
 } from '@raw-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
@@ -27,14 +28,14 @@ export function createEthersV5Call<C extends BaseContract, const Method extends 
     params: CreateEthersV6CallParams = {}
 ): Call<MethodReturnType<C, Method>, unknown> {
     const address = castToAddress(params.withAddress != undefined ? params.withAddress : contract.address);
-    const data = Bytes.from(contract.interface.encodeFunctionData(methodName, methodParams));
+    const data = toBytes(contract.interface.encodeFunctionData(methodName, methodParams));
     type ReturnType = MethodReturnType<C, Method>;
     return {
         getContractAddress: () => address,
         getData: () => data,
         ...wrapDecodeOutput({
             decodeResult(data): ReturnType {
-                const res = contract.interface.decodeFunctionResult(methodName, data.toString());
+                const res = contract.interface.decodeFunctionResult(methodName, bytesToHexWith0x(data));
                 if (res.length == 1) return res[0] as ReturnType;
                 return res as ReturnType;
             },
@@ -46,8 +47,8 @@ export function createEthersV5Call<C extends BaseContract, const Method extends 
                     if (EthersV5PanicContractError.checkBytesFragment(data)) {
                         return new EthersV5PanicContractError(data);
                     }
-                    const fragment = contract.interface.getError(data.slice(0, 4).toString());
-                    const decodedParams = contract.interface.decodeErrorResult(fragment, data.toString());
+                    const fragment = contract.interface.getError(bytesToHexWith0x(data.slice(0, 4)));
+                    const decodedParams = contract.interface.decodeErrorResult(fragment, bytesToHexWith0x(data));
                     return new EthersV5ContractError(fragment, decodedParams, data);
                 } catch (e: unknown) {
                     // The only clue for us that ethers can not decode the error
