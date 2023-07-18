@@ -15,6 +15,7 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 export type BuildRawMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
     predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes | string>>;
+    create2SaltPrefix?: string;
     sender?: {
         from?: RawAddressString;
         nonce?: number;
@@ -41,6 +42,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         calldataJoiner = groupedCalldataJoiner,
         predeployContracts = {},
         sender: { from: senderAddress = AddressZero, nonce: senderNonce = 0 } = {},
+        create2SaltPrefix = 'raw-multicall:',
     } = params ?? {};
 
     const contractAddress = calculateCreateAddress(toBytes(senderAddress), senderNonce);
@@ -57,7 +59,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
 
     const context: BuildRawMulticallContext = {
         getBuildingContractAddress: () => contractAddress,
-        getLabeledAddressSalt: (label) => keccak256(utf8ToBytes(label)),
+        getLabeledAddressSalt: (label) => keccak256(utf8ToBytes(create2SaltPrefix + label)),
         getLabeledAddress: (label: LabeledAddress['label']) =>
             calculateCreate2Address(
                 contractAddress,

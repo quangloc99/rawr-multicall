@@ -82,6 +82,7 @@ describeForChain(
                     y: testContract,
                     z: testContract,
                 },
+                create2SaltPrefix: 'test-salt-',
             });
 
             expect(callData).toMatchSnapshot();
