@@ -29,9 +29,6 @@ jobs:
     - name: Run build
       run: yarn workspaces foreach run build
 
-    - name: Run install again
-      run: yarn install --immutable
-       
     - name: Lint 
       run: yarn workspaces foreach run lint:nofix
        
