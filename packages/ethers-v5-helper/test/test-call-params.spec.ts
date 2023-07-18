@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { GasAndValueTester__factory } from '../ethers-v5-contracts/typechain-types';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     registerPredeployContract,
     decodeResult,
     unwrap,
@@ -35,7 +35,7 @@ describeForChain(
                         value: 10,
                     }),
                 ] as const);
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot('byteCode');
                 expect(calldata.splittedByteCodes).toMatchSnapshot('splittedByteCodes');
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });
@@ -68,7 +68,7 @@ describeForChain(
                     }),
                 ] as const);
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString() });
@@ -104,7 +104,7 @@ describeForChain(
                     }),
                 ]);
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });

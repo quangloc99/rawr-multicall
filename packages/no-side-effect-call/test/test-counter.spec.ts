@@ -2,7 +2,13 @@ import { describeForChain } from '@rawr-multicall/test-helper';
 import { Counter__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 import { createEthersV6Call } from '@rawr-multicall/ethers-v6-helper';
 import { ethers } from 'ethers';
-import { buildRawMulticallContract, decodeRawResult, decodeResult, labeledAddress, unwrap } from '@rawr-multicall/core';
+import {
+    buildRawrMulticallContract,
+    decodeRawResult,
+    decodeResult,
+    labeledAddress,
+    unwrap,
+} from '@rawr-multicall/core';
 import { wrapNoSideEffectCall } from '../src';
 
 describeForChain(
@@ -25,7 +31,7 @@ describeForChain(
                 await createEthersV6Call(contract, 'inc', [], { withAddress: testContractAddress }),
                 await createEthersV6Call(contract, 'counter', [], { withAddress: testContractAddress }),
             ] as const;
-            const calldata = buildRawMulticallContract(calls, {
+            const calldata = buildRawrMulticallContract(calls, {
                 predeployContracts: {
                     [label]: (await new Counter__factory().getDeployTransaction()).data,
                 },

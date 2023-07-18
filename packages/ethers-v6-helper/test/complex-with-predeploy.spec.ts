@@ -10,7 +10,7 @@ import { TestContract } from '@rawr-multicall/test-helper/ethers-v6-contracts/ty
 import { ThrowError } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types/ThrowError';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     resetPredeployContracts,
     registerPredeployContract,
     decodeResult,
@@ -39,7 +39,7 @@ describeForChain(
                 await createEthersV6Call(aPlusBContract, 'minus', [10, 20], { withAddress: labeledAddress('test') }),
             ] as const;
             const testContractByteCode = (await APlusBFactory.getDeployTransaction()).data;
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: { test: testContractByteCode },
             });
@@ -67,7 +67,7 @@ describeForChain(
                 await createEthersV6Call(testContract, 'hash', [1], { withAddress: labeledAddress('z') }),
             ] as const;
 
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: {
                     a: aPlusBContractByteCode,
@@ -104,7 +104,7 @@ describeForChain(
                 }),
             ] as const;
 
-            const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+            const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
             const res = await provider.call({ data: calldata.byteCode.toString() });
             const decodedRes = decodeResult(calls, res);

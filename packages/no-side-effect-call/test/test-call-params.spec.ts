@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { GasAndValueTester__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     registerPredeployContract,
     decodeResult,
     unwrap,
@@ -39,7 +39,7 @@ describeForChain(
                         })
                     ),
                 ] as const;
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });
@@ -78,7 +78,7 @@ describeForChain(
                     ),
                 ];
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString() });
@@ -120,7 +120,7 @@ describeForChain(
                     ),
                 ];
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });

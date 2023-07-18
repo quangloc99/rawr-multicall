@@ -1,11 +1,11 @@
 import { createEthersV5Call } from '../src';
-import { buildRawMulticallContract, decodeResult, Bytes } from '@rawr-multicall/core';
+import { buildRawrMulticallContract, decodeResult, Bytes } from '@rawr-multicall/core';
 import { CHAIN_ID_MAPPING, describeForChain, testData } from '@rawr-multicall/test-helper';
 import { providers } from 'ethers';
 import { ERC20__factory } from '../ethers-v5-contracts/typechain-types';
 
 describeForChain(
-    (chain: number) => `buildRawMulticallContract for chain ${chain}`,
+    (chain: number) => `buildRawrMulticallContract for chain ${chain}`,
     (rpcUrl: string, chain: number) => {
         const CUR_TEST_DATA = testData.ERC20[chain];
 
@@ -23,7 +23,7 @@ describeForChain(
             it('simple', async () => {
                 const contract = ERC20__factory.connect(CUR_TEST_DATA.tokenAddresses[0], provider);
                 const calls = [createEthersV5Call(contract, 'name', [])];
-                const sendData = buildRawMulticallContract(calls, { allowPUSH0 });
+                const sendData = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
                 expect(res).toMatchSnapshot();
@@ -48,7 +48,7 @@ describeForChain(
                     })
                 ).then((res) => res.flat());
 
-                const sendData = buildRawMulticallContract(calls, { allowPUSH0 });
+                const sendData = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
                 expect(res).toMatchSnapshot();

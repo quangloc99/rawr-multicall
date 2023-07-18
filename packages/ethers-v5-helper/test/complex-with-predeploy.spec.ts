@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { APlusB__factory, TestContract__factory, ThrowError__factory } from '../ethers-v5-contracts/typechain-types';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     resetPredeployContracts,
     registerPredeployContract,
     decodeResult,
@@ -33,7 +33,7 @@ describeForChain(
                 createEthersV5Call(aPlusBContract, 'minus', [10, 20], { withAddress: labeledAddress('test') }),
             ] as const;
             const testContractByteCode = ethers.utils.hexlify(assertDefined(APlusBFactory.getDeployTransaction().data));
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: { test: testContractByteCode },
             });
@@ -65,7 +65,7 @@ describeForChain(
                 createEthersV5Call(testContract, 'hash', [1], { withAddress: labeledAddress('z') }),
             ];
 
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: {
                     a: aPlusBContractByteCode,
@@ -104,7 +104,7 @@ describeForChain(
                 }),
             ] as const;
 
-            const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+            const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
             const res = await provider.call({ data: calldata.byteCode.toString() });
             const decodedRes = decodeResult(calls, res);

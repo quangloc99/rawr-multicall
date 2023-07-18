@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { ThrowError__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     registerPredeployContract,
     decodeResult,
 } from '@rawr-multicall/core';
@@ -44,7 +44,7 @@ describeForChain(
                 ),
             ] as const;
 
-            const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+            const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
             const res = await provider.call({ data: calldata.byteCode.toString() });
             const decodedRes = decodeResult(calls, res);
