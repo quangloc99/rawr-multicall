@@ -23,9 +23,6 @@ jobs:
     - name: Add yarn workspace-tool
       run: yarn plugin import workspace-tools
        
-    - name: Set authentication token
-      run: 'yarn config set npmScopes.pendle.npmAuthToken "${NPM_AUTH_TOKEN}"'
-       
     - name: Run install
       run: yarn install --immutable
 
