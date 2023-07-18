@@ -4,7 +4,7 @@ export * from './instructions';
 export * from './Bytes';
 export * from './Call';
 export * from './buildContract';
-export * from './buildRawMulticallContract';
+export * from './buildRawrMulticallContract';
 export * from './decodeOutput';
 export * from './errors';
 export * from './registerPredeployContract';

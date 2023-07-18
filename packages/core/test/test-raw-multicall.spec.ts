@@ -1,4 +1,4 @@
-import { Bytes, buildRawMulticallContract, createCall, decodeResult } from '../src';
+import { Bytes, buildRawrMulticallContract, createCall, decodeResult } from '../src';
 import { Interface, JsonRpcProvider } from 'ethers';
 import { describeForChain, CHAIN_ID_MAPPING, testData } from '@rawr-multicall/test-helper';
 import { ERC20__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
@@ -25,7 +25,7 @@ describeForChain(
             it('simple', async () => {
                 const callData = ERC20Iface.encodeFunctionData('balanceOf', [CUR_TEST_DATA.holders[0]]);
                 const calls = [createCall(CUR_TEST_DATA.tokenAddresses[1], callData)] as const;
-                const sendData = buildRawMulticallContract(calls, { allowPUSH0 });
+                const sendData = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(callData).toMatchSnapshot();
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
@@ -47,7 +47,7 @@ describeForChain(
                     ])
                     .flat();
 
-                const sendData = buildRawMulticallContract(calls, { allowPUSH0 });
+                const sendData = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(sendData).toMatchSnapshot();
                 const res = await doSend(sendData.byteCode);
                 expect(res).toMatchSnapshot();

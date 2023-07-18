@@ -10,7 +10,7 @@ import { TestContractInterface } from '@rawr-multicall/test-helper/ethers-v6-con
 import { ThrowErrorInterface } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types/ThrowError';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     createCall,
     NoPredeployContractError,
     resetPredeployContracts,
@@ -44,7 +44,7 @@ describeForChain(
                 createCall(labeledAddress('testContract'), APlusBIface.encodeFunctionData('minus', [10, 20])),
             ];
             const testContract = (await APlusBFactory.getDeployTransaction()).data;
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: { testContract },
             });
@@ -72,7 +72,7 @@ describeForChain(
                 createCall(labeledAddress('z'), TestContractInterface.encodeFunctionData('hash', [12345])),
             ];
 
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
                 predeployContracts: {
                     a: aPlusBContract,
@@ -102,7 +102,7 @@ describeForChain(
         it('no predeployed', () => {
             registerPredeployContract('existing-contract', '0x');
             const calls = [createCall(labeledAddress('non-existing'), '0x')];
-            expect(() => buildRawMulticallContract(calls)).toThrowError(NoPredeployContractError);
+            expect(() => buildRawrMulticallContract(calls)).toThrowError(NoPredeployContractError);
         });
 
         it('register predeploy contract', async () => {
@@ -111,7 +111,7 @@ describeForChain(
             ];
             const myContract = (await APlusBFactory.getDeployTransaction()).data;
             registerPredeployContract('my-contract', myContract);
-            const callData = buildRawMulticallContract(calls, {
+            const callData = buildRawrMulticallContract(calls, {
                 allowPUSH0,
             });
             expect(callData).toMatchSnapshot();
@@ -128,8 +128,8 @@ describeForChain(
             registerPredeployContract('a-plus-b', aPlusB);
             registerPredeployContract('test-contract', testContract);
 
-            const calldata1 = buildRawMulticallContract([createCall(labeledAddress('a-plus-b'), '0x')]);
-            const calldata2 = buildRawMulticallContract([createCall(labeledAddress('test-contract'), '0x')]);
+            const calldata1 = buildRawrMulticallContract([createCall(labeledAddress('a-plus-b'), '0x')]);
+            const calldata2 = buildRawrMulticallContract([createCall(labeledAddress('test-contract'), '0x')]);
 
             expect(hexStringContains(calldata1.byteCode, aPlusB)).toBeTruthy();
             expect(hexStringContains(calldata1.byteCode, testContract)).toBeFalsy();
@@ -154,7 +154,7 @@ describeForChain(
                 createCall(labeledAddress('throw-error'), ThrowErrorInterface.encodeFunctionData('revertPanic')),
             ];
 
-            const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+            const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
             expect(calldata).toMatchSnapshot();
             const res = await provider.call({ data: calldata.byteCode.toString() });
             const decodedRes = decodeResult(calls, res);

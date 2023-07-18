@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { GasAndValueTester__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 import {
     labeledAddress,
-    buildRawMulticallContract,
+    buildRawrMulticallContract,
     createCall,
     registerPredeployContract,
     decodeResult,
@@ -32,7 +32,7 @@ describeForChain(
                         value: 10,
                     }),
                 ];
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });
@@ -55,7 +55,7 @@ describeForChain(
                         value: 10,
                     }),
                 ];
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({
@@ -89,7 +89,7 @@ describeForChain(
                     }),
                 ];
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString() });
@@ -134,7 +134,7 @@ describeForChain(
                     ),
                 ];
 
-                const calldata = buildRawMulticallContract(calls, { allowPUSH0 });
+                const calldata = buildRawrMulticallContract(calls, { allowPUSH0 });
                 expect(calldata.byteCode).toMatchSnapshot();
                 expect(calldata.splittedByteCodes).toMatchSnapshot();
                 const res = await provider.call({ data: calldata.byteCode.toString(), value: calldata.totalValue });

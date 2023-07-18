@@ -8,11 +8,11 @@ import { prefixSum, zip } from './util';
 import { assertDefined, NoPredeployContractError } from './errors';
 import { Address, LabeledAddress, RawAddressString, calculateCreateAddress, calculateCreate2Address } from './Address';
 import { registeredPredeployContracts } from './registerPredeployContract';
-import { BuildRawMulticallContext } from './BuildRawMulticallContext';
+import { BuildRawrMulticallContext } from './BuildRawrMulticallContext';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 // import { generateAddress, generateAddress2 } from '@ethereumjs/util';
 
-export type BuildRawMulticallContractParams = InstructionContextParams & {
+export type BuildRawrMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
     predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes | string>>;
     create2SaltPrefix?: string;
@@ -22,9 +22,9 @@ export type BuildRawMulticallContractParams = InstructionContextParams & {
     };
 };
 
-export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
+export function buildRawrMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
     calls: Calls,
-    params?: BuildRawMulticallContractParams
+    params?: BuildRawrMulticallContractParams
 ) {
     const { instructions, totalValue } = buildRawMulticallInstructions(calls, params);
     const contractData = buildContract(instructions, params);
@@ -36,7 +36,7 @@ export function buildRawMulticallContract<Calls extends readonly Call<unknown, u
 
 export function buildRawMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
     calls: Calls,
-    params?: BuildRawMulticallContractParams
+    params?: BuildRawrMulticallContractParams
 ): { instructions: ins.Instruction[]; totalValue: number } {
     const {
         calldataJoiner = groupedCalldataJoiner,
@@ -57,7 +57,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
             )
         );
 
-    const context: BuildRawMulticallContext = {
+    const context: BuildRawrMulticallContext = {
         getBuildingContractAddress: () => contractAddress,
         getLabeledAddressSalt: (label) => keccak256(utf8ToBytes(create2SaltPrefix + label)),
         getLabeledAddress: (label: LabeledAddress['label']) =>
