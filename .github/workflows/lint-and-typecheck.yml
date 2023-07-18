@@ -11,6 +11,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-node@v3
+      with:
+        cache: yarn
+
     - name: find yarn
       run: which yarn
       
@@ -25,6 +28,9 @@ jobs:
        
     - name: Run install
       run: yarn install --immutable
+
+    - name: build
+      run: yarn workspaces foreach run build
        
     - name: Lint 
       run: yarn workspaces foreach run lint:nofix
