@@ -1,4 +1,10 @@
-# no-side-effect-call
+# @rawr-multicall/no-side-effect-call
+
+Utility to call contract without side effect of [Rawr-multicall].
+
+Please refer to [Rawr-mulitcall] for more details usage.
+
+[Rawr-multicall]: https://github.com/quangloc99/rawr-multicall
 
 ## Contract
 
