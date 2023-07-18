@@ -26,7 +26,7 @@ export function buildRawrMulticallContract<Calls extends readonly Call<unknown, 
     calls: Calls,
     params?: BuildRawrMulticallContractParams
 ) {
-    const { instructions, totalValue } = buildRawMulticallInstructions(calls, params);
+    const { instructions, totalValue } = buildRawrMulticallInstructions(calls, params);
     const contractData = buildContract(instructions, params);
     return {
         ...contractData,
@@ -34,7 +34,7 @@ export function buildRawrMulticallContract<Calls extends readonly Call<unknown, 
     };
 }
 
-export function buildRawMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
+export function buildRawrMulticallInstructions<Calls extends readonly Call<unknown, unknown>[]>(
     calls: Calls,
     params?: BuildRawrMulticallContractParams
 ): { instructions: ins.Instruction[]; totalValue: number } {
