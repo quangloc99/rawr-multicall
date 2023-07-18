@@ -1966,7 +1966,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
     ethereum-cryptography: ^2.1.2
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     jest: ^29.6.1
     prettier: ^3.0.0
     rlp: ^3.0.0
@@ -1982,9 +1982,8 @@ __metadata:
   dependencies:
     "@rawr-multicall/core": "workspace:*"
     "@rawr-multicall/test-helper": "workspace:*"
-    "@typechain/ethers-v5": ^11.0.0
-    "@typechain/ethers-v6": ^0.4.0
-    "@typechain/hardhat": ^8.0.0
+    "@typechain/ethers-v5": ^11.1.0
+    "@typechain/hardhat": ^8.0.2
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     eslint: ^8.44.0
@@ -1992,7 +1991,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
     ethers: ^5.7.0
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     jest: ^29.6.1
     prettier: ^3.0.0
     ts-jest: ^29.1.1
@@ -2008,7 +2007,7 @@ __metadata:
     "@rawr-multicall/core": "workspace:*"
     "@rawr-multicall/test-helper": "workspace:*"
     "@typechain/ethers-v6": ^0.4.0
-    "@typechain/hardhat": ^8.0.0
+    "@typechain/hardhat": ^8.0.2
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     eslint: ^8.44.0
@@ -2016,7 +2015,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
     ethers: ^6.6.3
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     jest: ^29.6.1
     prettier: ^3.0.0
     ts-jest: ^29.1.1
@@ -2039,7 +2038,7 @@ __metadata:
     eslint-config-prettier: ^8.8.0
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     jest: ^29.6.1
     prettier: ^3.0.0
     ts-jest: ^29.1.1
@@ -2053,7 +2052,7 @@ __metadata:
   resolution: "@rawr-multicall/test-helper@workspace:packages/test-helper"
   dependencies:
     "@typechain/ethers-v6": ^0.4.0
-    "@typechain/hardhat": ^8.0.0
+    "@typechain/hardhat": ^8.0.2
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     eslint: ^8.44.0
@@ -2061,7 +2060,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     eslint-plugin-unused-imports: ^3.0.0
     ethers: ^6.6.3
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     prettier: ^3.0.0
     typechain: ^8.2.0
     typescript: ^5.1.6
@@ -2289,9 +2288,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typechain/ethers-v5@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@typechain/ethers-v5@npm:11.0.0"
+"@typechain/ethers-v5@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@typechain/ethers-v5@npm:11.1.0"
   dependencies:
     lodash: ^4.17.15
     ts-essentials: ^7.0.1
@@ -2299,9 +2298,9 @@ __metadata:
     "@ethersproject/abi": ^5.0.0
     "@ethersproject/providers": ^5.0.0
     ethers: ^5.1.3
-    typechain: ^8.2.0
+    typechain: ^8.3.0
     typescript: ">=4.3.0"
-  checksum: 4f2986070b3e4492e64db308e437b887d73b689c9ddbf52c6f0874f3a7467b39fa53352172d8cd649568f9d44cb5393c92bdfc05f26cb917db1aa45fc0d5fe85
+  checksum: ca6e4300aebd4534880d170c4e142a75ad5b6dabc8e508dab1588e33e9fb972e6d588feafdd0fc91c87fd9b6b37df7fe09d6beffa3c430627528b4182d02ad0a
   languageName: node
   linkType: hard
 
@@ -2319,17 +2318,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typechain/hardhat@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@typechain/hardhat@npm:8.0.0"
+"@typechain/hardhat@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@typechain/hardhat@npm:8.0.2"
   dependencies:
     fs-extra: ^9.1.0
   peerDependencies:
-    "@typechain/ethers-v6": ^0.4.0
+    "@typechain/ethers-v6": ^0.4.2
     ethers: ^6.1.0
     hardhat: ^2.9.9
-    typechain: ^8.2.0
-  checksum: e8049a296e547842351f4ece39d4cf5847a2a8d8bc9ffa4ef8ee38c47e4126b02ff16e57ef32f9808f20534263927a754270a1d5960c0ec9d0e4595eeba0b287
+    typechain: ^8.3.0
+  checksum: d8339fa72ac5ab4efffd02bdd222a5c0456d1864ac938d6fc08984a24302da421f628d508faf427a266f46624cd94ba31b0ae127d3209aa7bf5fd8bd097debe3
   languageName: node
   linkType: hard
 
@@ -5255,9 +5254,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hardhat@npm:^2.16.1":
-  version: 2.16.1
-  resolution: "hardhat@npm:2.16.1"
+"hardhat@npm:^2.17.0":
+  version: 2.17.0
+  resolution: "hardhat@npm:2.17.0"
   dependencies:
     "@ethersproject/abi": ^5.1.2
     "@metamask/eth-sig-util": ^4.0.0
@@ -5318,7 +5317,7 @@ __metadata:
       optional: true
   bin:
     hardhat: internal/cli/bootstrap.js
-  checksum: 32508ab6463efd796e8805150c182a9b974fcec8e4ab362a95f8bab2b4baf24c4feb48bbee1f3a7165a934f5257e1d3fcfea5764f261404aec23a88066341e48
+  checksum: fcbbee245069a9c3fd0b7f015bc7b99529d3b2be6b8c0c9a61d6a68e5eb2bece8d4f7a9a206808af8fa46a3f3f05df51571caa4e88d3ebbc977c0f16fdb0aafe
   languageName: node
   linkType: hard
 
@@ -8215,7 +8214,7 @@ __metadata:
   resolution: "rawr-multicall@workspace:."
   dependencies:
     "@typechain/ethers-v6": ^0.4.0
-    "@typechain/hardhat": ^8.0.0
+    "@typechain/hardhat": ^8.0.2
     "@types/jest": ^29.4.0
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
@@ -8226,7 +8225,7 @@ __metadata:
     eslint-plugin-unused-imports: ^3.0.0
     ethers: ^6.6.2
     ethers-v5: "npm:ethers@^5.7.0"
-    hardhat: ^2.16.1
+    hardhat: ^2.17.0
     jest: ^29.4.1
     prettier: ^3.0.0
     ts-jest: ^29.1.1

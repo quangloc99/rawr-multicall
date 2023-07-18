@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
         artifacts: 'artifacts',
     },
     typechain: {
-        outDir: 'ethers-v5-contracts/typechain-types',
+        outDir: './ethers-v5-contracts/typechain-types',
         target: 'ethers-v5',
     },
     solidity: {
