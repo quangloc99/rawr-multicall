@@ -15,7 +15,6 @@ export function wrapNoSideEffectCall<ReturnType, ErrorType>(
             ]);
         },
         decodeOutput: (success, data) => {
-            console.log(data);
             assert(!success, 'CallThenRevert contract result should not have successful status');
             const actualSuccess = data[0];
             const actualData = data.slice(1);
