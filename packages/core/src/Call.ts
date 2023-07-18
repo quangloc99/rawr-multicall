@@ -1,13 +1,15 @@
 import { Bytes, toBytes, bytesToHexWith0x } from './Bytes';
 import { Address, castToAddress, AddressOrRawAddress } from './Address';
 import { type Result } from './Result';
+import { BuildRawMulticallContext } from './BuildRawMulticallContext';
 
 export type Call<ResultType, ErrorType> = {
-    getContractAddress(): Address;
-    getData(): Bytes;
+    getContractAddress(context: BuildRawMulticallContext): Address;
+    getData(context: BuildRawMulticallContext): Bytes;
+    getValue(context: BuildRawMulticallContext): number;
+    getGasLimit(context: BuildRawMulticallContext): number | undefined;
+
     decodeOutput(success: boolean, data: Bytes): Result<ResultType, ErrorType>;
-    getValue(): number;
-    getGasLimit(): number | undefined;
 };
 
 export type CallParams = {

@@ -1,19 +1,21 @@
 import { Call } from './Call';
-import { Bytes, toBytes } from './Bytes';
+import { Bytes, hexToBytes, toBytes, utf8ToBytes } from './Bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
-import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START, WORD_SIZE_bytes } from './constants';
+import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START, AddressZero } from './constants';
 import { CalldataJoiner, groupedCalldataJoiner } from './CalldataJoiner';
 import { prefixSum, zip } from './util';
 import { assertDefined, NoPredeployContractError } from './errors';
-import { Address, LabeledAddress, RawAddressString } from './Address';
+import { Address, LabeledAddress, RawAddressString, calculateCreateAddress, calculateCreate2Address } from './Address';
 import { registeredPredeployContracts } from './registerPredeployContract';
+import { BuildRawMulticallContext } from './BuildRawMulticallContext';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 // import { generateAddress, generateAddress2 } from '@ethereumjs/util';
 
 export type BuildRawMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
     predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes | string>>;
-    tx?: {
+    sender?: {
         from?: RawAddressString;
         nonce?: number;
     };
@@ -35,7 +37,14 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     calls: Calls,
     params?: BuildRawMulticallContractParams
 ): { instructions: ins.Instruction[]; totalValue: number } {
-    const { calldataJoiner = groupedCalldataJoiner, predeployContracts = {} } = params ?? {};
+    const {
+        calldataJoiner = groupedCalldataJoiner,
+        predeployContracts = {},
+        sender: { from: senderAddress = AddressZero, nonce: senderNonce = 0 } = {},
+    } = params ?? {};
+
+    const contractAddress = calculateCreateAddress(toBytes(senderAddress), senderNonce);
+
     const instructions: ins.Instruction[] = [];
 
     const lookupPredeployContract = (label: LabeledAddress['label']) =>
@@ -46,6 +55,25 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
             )
         );
 
+    const context: BuildRawMulticallContext = {
+        getBuildingContractAddress: () => contractAddress,
+        getLabeledAddressSalt: (label) => keccak256(utf8ToBytes(label)),
+        getLabeledAddress: (label: LabeledAddress['label']) =>
+            calculateCreate2Address(
+                contractAddress,
+                lookupPredeployContract(label),
+                context.getLabeledAddressSalt(label)
+            ),
+        resolveAddress: (address) =>
+            typeof address === 'string'
+                ? hexToBytes(address)
+                : address instanceof Uint8Array
+                ? address
+                : address.type === 'string'
+                ? address.address
+                : context.getLabeledAddress(address.label),
+    };
+
     const LABELS = {
         // This label will be pushed in the very end.
         dataStart: 'data-start',
@@ -53,10 +81,10 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
 
     // extract data here to avoid multiple calls
     const callsData = calls.map((call) => ({
-        data: call.getData(),
-        contractAddress: call.getContractAddress(),
-        gasLimit: call.getGasLimit(),
-        value: call.getValue(),
+        data: call.getData(context),
+        contractAddress: call.getContractAddress(context),
+        gasLimit: call.getGasLimit(context),
+        value: call.getValue(context),
     }));
     const uniqueLabels = Array.from(
         new Set(
@@ -79,13 +107,11 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const totalDataSize = joinedCalldata.result.length + joinedPredeployContractsByteCode.result.length;
 
     // memory layout
-    const [predeployContractBytecodeOffset, dataOffset, predeployContractAddressesOffset, RETURN_DATA_START] =
-        prefixSum([
-            FREE_MEMORY_START,
-            joinedPredeployContractsByteCode.result.length,
-            joinedCalldata.result.length,
-            usedPredeployContracts.size * WORD_SIZE_bytes,
-        ]);
+    const [predeployContractBytecodeOffset, dataOffset, RETURN_DATA_START] = prefixSum([
+        FREE_MEMORY_START,
+        joinedPredeployContractsByteCode.result.length,
+        joinedCalldata.result.length,
+    ]);
 
     // copy ALL data to memory
     // use CODECOPY as the data will be appended right after the creation code.
@@ -96,20 +122,21 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         ins.CODECOPY
     );
 
-    // deploy contract and save to memory
-    for (const [id, { offset, size }] of joinedPredeployContractsByteCode.parts.entries()) {
+    // deploy contract
+    for (const [label, { offset, size }] of zip(
+        usedPredeployContracts.keys(),
+        joinedPredeployContractsByteCode.parts
+    )) {
         // deploy contract
         instructions.push(
-            ins.PUSH_NUMBER(size),
-            ins.PUSH_NUMBER(offset + predeployContractBytecodeOffset),
+            ins.PUSH(context.getLabeledAddressSalt(label)), // salt
+            ins.PUSH_NUMBER(size), // size
+            ins.PUSH_NUMBER(offset + predeployContractBytecodeOffset), // offset
             ins.PUSH0, // value
-            ins.CREATE
+            ins.CREATE2,
+            // we don't need the contract address. We can inject the create2 address
+            ins.POP
         );
-        // stack state: [contract_address]
-
-        // save to memory
-        instructions.push(ins.MSTORE_OFFSET(predeployContractAddressesOffset + WORD_SIZE_bytes * id));
-        // stack state: []
     }
 
     // convenient constant(s)
@@ -123,8 +150,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
 
     const wrappedPushAddress = (addr: Address) => {
         if (addr.type == 'string') return [ins.PUSH_ADDRESS(addr.address)];
-        const id = assertDefined(usedPredeployContracts.get(addr.label)?.id);
-        return [ins.MLOAD_OFFSET(id * WORD_SIZE_bytes + predeployContractAddressesOffset)];
+        return [ins.PUSH_ADDRESS(context.getLabeledAddress(addr.label))];
     };
 
     for (const [callData, currentPart] of zip(callsData, joinedCalldata.parts)) {

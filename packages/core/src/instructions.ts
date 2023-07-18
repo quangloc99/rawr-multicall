@@ -38,6 +38,8 @@ export const RETURN = singleByteInstruction(0xf3);
 export const STOP = singleByteInstruction(0x00);
 export const SHL = singleByteInstruction(0x1b);
 export const CREATE = singleByteInstruction(0xf0);
+export const CREATE2 = singleByteInstruction(0xf5);
+export const POP = singleByteInstruction(0x50);
 
 export function VERBATIM(bytes: Bytes): Instruction {
     return {
