@@ -1,4 +1,4 @@
-import * as CallThenRevertContractArtifact from '../artifacts/contracts/CallThenRevert.yul/CallThenRevert.json';
+import * as CallThenRevertContractArtifact from './generated/contracts/CallThenRevert.json';
 export { CallThenRevertContractArtifact };
 
 export const CallThenRevertContractByteCode =
