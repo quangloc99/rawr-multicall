@@ -1,14 +1,14 @@
-import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING } from '@rawr-multicall/test-helper';
 import { ethers } from 'ethers';
-import { GasAndValueTester__factory } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { GasAndValueTester__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 import {
     labeledAddress,
     buildRawMulticallContract,
     registerPredeployContract,
     decodeResult,
     unwrap,
-} from '@raw-multicall/core';
-import { createEthersV6Call } from '@raw-multicall/ethers-v6-helper';
+} from '@rawr-multicall/core';
+import { createEthersV6Call } from '@rawr-multicall/ethers-v6-helper';
 import { wrapNoSideEffectCall } from '../src';
 
 describeForChain(

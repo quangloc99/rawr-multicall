@@ -1,6 +1,6 @@
 import { createEthersV5Call } from '../src';
-import { buildRawMulticallContract, decodeResult, Bytes } from '@raw-multicall/core';
-import { CHAIN_ID_MAPPING, describeForChain, testData } from '@raw-multicall/test-helper';
+import { buildRawMulticallContract, decodeResult, Bytes } from '@rawr-multicall/core';
+import { CHAIN_ID_MAPPING, describeForChain, testData } from '@rawr-multicall/test-helper';
 import { providers } from 'ethers';
 import { ERC20__factory } from '../ethers-v5-contracts/typechain-types';
 

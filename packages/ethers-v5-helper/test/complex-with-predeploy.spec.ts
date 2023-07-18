@@ -1,4 +1,4 @@
-import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@rawr-multicall/test-helper';
 import { ethers } from 'ethers';
 import { APlusB__factory, TestContract__factory, ThrowError__factory } from '../ethers-v5-contracts/typechain-types';
 import {
@@ -8,7 +8,7 @@ import {
     registerPredeployContract,
     decodeResult,
     assertDefined,
-} from '@raw-multicall/core';
+} from '@rawr-multicall/core';
 import { createEthersV5Call } from '../src';
 
 describeForChain(

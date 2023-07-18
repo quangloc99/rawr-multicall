@@ -1,20 +1,20 @@
-import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@rawr-multicall/test-helper';
 import { ethers, BaseContract } from 'ethers';
 import {
     APlusB__factory,
     TestContract__factory,
     ThrowError__factory,
-} from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
-import { APlusB } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
-import { TestContract } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/TestContract';
-import { ThrowError } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/ThrowError';
+} from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { APlusB } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { TestContract } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types/TestContract';
+import { ThrowError } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types/ThrowError';
 import {
     labeledAddress,
     buildRawMulticallContract,
     resetPredeployContracts,
     registerPredeployContract,
     decodeResult,
-} from '@raw-multicall/core';
+} from '@rawr-multicall/core';
 import { createEthersV6Call } from '../src';
 
 describeForChain(

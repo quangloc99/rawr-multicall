@@ -1,8 +1,8 @@
 import { Bytes, buildRawMulticallContract, createCall, decodeResult } from '../src';
 import { Interface, JsonRpcProvider } from 'ethers';
-import { describeForChain, CHAIN_ID_MAPPING, testData } from '@raw-multicall/test-helper';
-import { ERC20__factory } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
-import { ERC20Interface } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types/ERC20';
+import { describeForChain, CHAIN_ID_MAPPING, testData } from '@rawr-multicall/test-helper';
+import { ERC20__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { ERC20Interface } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types/ERC20';
 
 const ERC20Iface = new Interface(ERC20__factory.abi) as unknown as ERC20Interface;
 

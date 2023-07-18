@@ -1,4 +1,4 @@
-import { Bytes, RawMulticallError, assert, equalsBytes, hexToBytes, bytesToHexWith0x } from '@raw-multicall/core';
+import { Bytes, RawMulticallError, assert, equalsBytes, hexToBytes, bytesToHexWith0x } from '@rawr-multicall/core';
 import { BigNumber, ethers } from 'ethers';
 import type { ErrorFragment, Result } from '@ethersproject/abi';
 

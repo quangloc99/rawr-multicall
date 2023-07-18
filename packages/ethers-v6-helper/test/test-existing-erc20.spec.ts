@@ -1,8 +1,8 @@
 import { createEthersV6Call } from '../src';
-import { buildRawMulticallContract, decodeResult, Bytes } from '@raw-multicall/core';
-import { CHAIN_ID_MAPPING, describeForChain, testData } from '@raw-multicall/test-helper';
+import { buildRawMulticallContract, decodeResult, Bytes } from '@rawr-multicall/core';
+import { CHAIN_ID_MAPPING, describeForChain, testData } from '@rawr-multicall/test-helper';
 import { BaseContract, JsonRpcProvider } from 'ethers';
-import { ERC20, ERC20__factory } from '@raw-multicall/test-helper/ethers-v6-contracts/typechain-types';
+import { ERC20, ERC20__factory } from '@rawr-multicall/test-helper/ethers-v6-contracts/typechain-types';
 
 describeForChain(
     (chain: number) => `buildRawMulticallContract for chain ${chain}`,

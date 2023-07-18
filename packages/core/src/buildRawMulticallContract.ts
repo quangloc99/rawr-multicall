@@ -42,7 +42,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         calldataJoiner = groupedCalldataJoiner,
         predeployContracts = {},
         sender: { from: senderAddress = AddressZero, nonce: senderNonce = 0 } = {},
-        create2SaltPrefix = 'raw-multicall:',
+        create2SaltPrefix = 'rawr-multicall:',
     } = params ?? {};
 
     const contractAddress = calculateCreateAddress(toBytes(senderAddress), senderNonce);

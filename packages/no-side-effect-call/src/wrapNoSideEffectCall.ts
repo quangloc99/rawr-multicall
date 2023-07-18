@@ -1,4 +1,4 @@
-import { Call, labeledAddress, assert, concatBytes, numberToBytes } from '@raw-multicall/core';
+import { Call, labeledAddress, assert, concatBytes, numberToBytes } from '@rawr-multicall/core';
 import { CallThenRevertContractLabel } from './registerPredeployCallThenRevert';
 
 export function wrapNoSideEffectCall<ReturnType, ErrorType>(

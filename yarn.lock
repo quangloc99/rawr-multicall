@@ -1954,11 +1954,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@raw-multicall/core@workspace:*, @raw-multicall/core@workspace:^, @raw-multicall/core@workspace:packages/core":
+"@rawr-multicall/core@workspace:*, @rawr-multicall/core@workspace:^, @rawr-multicall/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@raw-multicall/core@workspace:packages/core"
+  resolution: "@rawr-multicall/core@workspace:packages/core"
   dependencies:
-    "@raw-multicall/test-helper": "workspace:*"
+    "@rawr-multicall/test-helper": "workspace:*"
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
     eslint: ^8.44.0
@@ -1976,12 +1976,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@raw-multicall/ethers-v5-helper@workspace:packages/ethers-v5-helper":
+"@rawr-multicall/ethers-v5-helper@workspace:packages/ethers-v5-helper":
   version: 0.0.0-use.local
-  resolution: "@raw-multicall/ethers-v5-helper@workspace:packages/ethers-v5-helper"
+  resolution: "@rawr-multicall/ethers-v5-helper@workspace:packages/ethers-v5-helper"
   dependencies:
-    "@raw-multicall/core": "workspace:*"
-    "@raw-multicall/test-helper": "workspace:*"
+    "@rawr-multicall/core": "workspace:*"
+    "@rawr-multicall/test-helper": "workspace:*"
     "@typechain/ethers-v5": ^11.0.0
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0
@@ -2001,12 +2001,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@raw-multicall/ethers-v6-helper@workspace:^, @raw-multicall/ethers-v6-helper@workspace:packages/ethers-v6-helper":
+"@rawr-multicall/ethers-v6-helper@workspace:^, @rawr-multicall/ethers-v6-helper@workspace:packages/ethers-v6-helper":
   version: 0.0.0-use.local
-  resolution: "@raw-multicall/ethers-v6-helper@workspace:packages/ethers-v6-helper"
+  resolution: "@rawr-multicall/ethers-v6-helper@workspace:packages/ethers-v6-helper"
   dependencies:
-    "@raw-multicall/core": "workspace:*"
-    "@raw-multicall/test-helper": "workspace:*"
+    "@rawr-multicall/core": "workspace:*"
+    "@rawr-multicall/test-helper": "workspace:*"
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^6.0.0
@@ -2025,13 +2025,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@raw-multicall/no-side-effect-call@workspace:packages/no-side-effect-call":
+"@rawr-multicall/no-side-effect-call@workspace:packages/no-side-effect-call":
   version: 0.0.0-use.local
-  resolution: "@raw-multicall/no-side-effect-call@workspace:packages/no-side-effect-call"
+  resolution: "@rawr-multicall/no-side-effect-call@workspace:packages/no-side-effect-call"
   dependencies:
-    "@raw-multicall/core": "workspace:^"
-    "@raw-multicall/ethers-v6-helper": "workspace:^"
-    "@raw-multicall/test-helper": "workspace:*"
+    "@rawr-multicall/core": "workspace:^"
+    "@rawr-multicall/ethers-v6-helper": "workspace:^"
+    "@rawr-multicall/test-helper": "workspace:*"
     "@tovarishfin/hardhat-yul": ^3.0.5
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
@@ -2048,9 +2048,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@raw-multicall/test-helper@workspace:*, @raw-multicall/test-helper@workspace:packages/test-helper":
+"@rawr-multicall/test-helper@workspace:*, @rawr-multicall/test-helper@workspace:packages/test-helper":
   version: 0.0.0-use.local
-  resolution: "@raw-multicall/test-helper@workspace:packages/test-helper"
+  resolution: "@rawr-multicall/test-helper@workspace:packages/test-helper"
   dependencies:
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0
@@ -8210,9 +8210,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"raw-multicall@workspace:.":
+"rawr-multicall@workspace:.":
   version: 0.0.0-use.local
-  resolution: "raw-multicall@workspace:."
+  resolution: "rawr-multicall@workspace:."
   dependencies:
     "@typechain/ethers-v6": ^0.4.0
     "@typechain/hardhat": ^8.0.0

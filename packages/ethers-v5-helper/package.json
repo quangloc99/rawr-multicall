@@ -1,11 +1,11 @@
 {
-    "name": "@raw-multicall/ethers-v5-helper",
+    "name": "@rawr-multicall/ethers-v5-helper",
     "version": "1.0.0",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "devDependencies": {
-        "@raw-multicall/test-helper": "workspace:*",
+        "@rawr-multicall/test-helper": "workspace:*",
         "@typechain/ethers-v5": "^11.0.0",
         "@typechain/ethers-v6": "^0.4.0",
         "@typechain/hardhat": "^8.0.0",
@@ -32,7 +32,7 @@
         "compile-contracts": "yarn compile-contracts-ethers-v5 --force"
     },
     "dependencies": {
-        "@raw-multicall/core": "workspace:*",
+        "@rawr-multicall/core": "workspace:*",
         "ethers": "^5.7.0"
     }
 }

@@ -7,7 +7,7 @@ import {
     wrapDecodeOutput,
     toBytes,
     bytesToHexWith0x,
-} from '@raw-multicall/core';
+} from '@rawr-multicall/core';
 import { BaseContract } from 'ethers';
 import { MethodNames, MethodParameters, MethodReturnType } from './types';
 import { NoFragmentFoundError, EthersV6ContractError } from './error';

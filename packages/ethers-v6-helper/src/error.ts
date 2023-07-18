@@ -1,4 +1,4 @@
-import { Bytes, RawMulticallError, bytesToHexWith0x } from '@raw-multicall/core';
+import { Bytes, RawMulticallError, bytesToHexWith0x } from '@rawr-multicall/core';
 import { ErrorFragment } from 'ethers';
 
 export class NoFragmentFoundError extends RawMulticallError {

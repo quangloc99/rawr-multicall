@@ -1,5 +1,5 @@
 {
-    "name": "@raw-multicall/no-side-effect-call",
+    "name": "@rawr-multicall/no-side-effect-call",
     "version": "1.0.0",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
@@ -10,8 +10,8 @@
         "README.md"
     ],
     "devDependencies": {
-        "@raw-multicall/ethers-v6-helper": "workspace:^",
-        "@raw-multicall/test-helper": "workspace:*",
+        "@rawr-multicall/ethers-v6-helper": "workspace:^",
+        "@rawr-multicall/test-helper": "workspace:*",
         "@tovarishfin/hardhat-yul": "^3.0.5",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
@@ -35,6 +35,6 @@
         "compile-contracts": "❯ solc --standard-json ./solc-standard-json-input.json > ./artifacts/contracts/CallThenRevert.yul/CallThenRevert.json"
     },
     "dependencies": {
-        "@raw-multicall/core": "workspace:^"
+        "@rawr-multicall/core": "workspace:^"
     }
 }

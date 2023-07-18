@@ -1,5 +1,5 @@
 {
-    "name": "raw-multicall",
+    "name": "rawr-multicall",
     "version": "1.0.0",
     "description": "Template for project with Typescript",
     "main": "dist/index.js",

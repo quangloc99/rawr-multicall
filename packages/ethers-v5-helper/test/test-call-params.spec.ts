@@ -1,4 +1,4 @@
-import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING } from '@rawr-multicall/test-helper';
 import { ethers } from 'ethers';
 import { GasAndValueTester__factory } from '../ethers-v5-contracts/typechain-types';
 import {
@@ -8,7 +8,7 @@ import {
     decodeResult,
     unwrap,
     assertDefined,
-} from '@raw-multicall/core';
+} from '@rawr-multicall/core';
 import { createEthersV5Call } from '../src';
 
 describeForChain(
