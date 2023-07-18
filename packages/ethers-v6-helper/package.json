@@ -1,11 +1,34 @@
 {
     "name": "@rawr-multicall/ethers-v6-helper",
     "version": "1.0.0",
+    "description": "Ethers.js V6 helper for @rawr-multicall",
+    "keywords": [
+        "rawr-multicall",
+        "multicall",
+        "smart contract",
+        "offchain",
+        "solidity",
+        "yul",
+        "typescript",
+        "ethers",
+        "ethers.js",
+        "ethers.js v6"
+    ],
+    "homepage": "https://github.com/quangloc99/rawr-multicall",
+    "bugs": "https://github.com/quangloc99/rawr-multicall/issues",
+    "author": "Tran Quang Loc <quangloctran99@gmail.com>",
+    "license": "MIT",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
     "devDependencies": {
-        "@rawr-multicall/test-helper": "workspace:*",
+        "@rawr-multicall/test-helper": "workspace:^",
         "@typechain/ethers-v6": "^0.4.0",
         "@typechain/hardhat": "^8.0.2",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -26,10 +49,11 @@
         "build": "yarn tsc -p tsconfig.build.json",
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
-        "test": "yarn jest"
+        "test": "yarn jest",
+        "prepack": "yarn build"
     },
     "dependencies": {
-        "@rawr-multicall/core": "workspace:*",
+        "@rawr-multicall/core": "workspace:^",
         "ethers": "^6.6.3"
     }
 }

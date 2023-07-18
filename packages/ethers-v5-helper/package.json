@@ -1,11 +1,36 @@
 {
     "name": "@rawr-multicall/ethers-v5-helper",
     "version": "1.0.0",
+    "description": "Powerful, type-safe alternative to Multicall for off-chain smart contract query",
+    "keywords": [
+        "rawr-multicall",
+        "multicall",
+        "smart contract",
+        "offchain",
+        "solidity",
+        "yul",
+        "typescript",
+        "ethers",
+        "ethers.js",
+        "ethers.js v5"
+    ],
+    "homepage": "https://github.com/quangloc99/rawr-multicall",
+    "bugs": "https://github.com/quangloc99/rawr-multicall/issues",
+    "author": "Tran Quang Loc <quangloctran99@gmail.com>",
+    "license": "MIT",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "ethers-v5-contracts",
+        "src",
+        "test-contracts",
+        "README.md",
+        "LICENSE"
+    ],
     "devDependencies": {
-        "@rawr-multicall/test-helper": "workspace:*",
+        "@rawr-multicall/test-helper": "workspace:^",
         "@typechain/ethers-v5": "^11.1.0",
         "@typechain/hardhat": "^8.0.2",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -28,10 +53,11 @@
         "lint": "yarn lint:nofix --fix",
         "test": "yarn jest",
         "compile-contracts-ethers-v5": "yarn hardhat typechain",
-        "compile-contracts": "yarn compile-contracts-ethers-v5"
+        "compile-contracts": "yarn compile-contracts-ethers-v5",
+        "prepack": "yarn build"
     },
     "dependencies": {
-        "@rawr-multicall/core": "workspace:*",
+        "@rawr-multicall/core": "workspace:^",
         "ethers": "^5.7.0"
     }
 }

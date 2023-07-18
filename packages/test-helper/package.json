@@ -1,13 +1,31 @@
 {
     "name": "@rawr-multicall/test-helper",
     "version": "1.0.0",
+    "description": "Test helper for rawr-multicall",
+    "keywords": [
+        "rawr-multicall",
+        "multicall",
+        "smart contract",
+        "offchain",
+        "solidity",
+        "yul",
+        "typescript"
+    ],
+    "homepage": "https://github.com/quangloc99/rawr-multicall",
+    "bugs": "https://github.com/quangloc99/rawr-multicall/issues",
+    "author": "Tran Quang Loc <quangloctran99@gmail.com>",
+    "license": "MIT",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.js",
     "files": [
         "dist",
         "src",
-        "artifacts"
+        "artifacts",
+        "test-contracts",
+        "ethers-v6-contracts",
+        "README.md",
+        "LICENSE"
     ],
     "scripts": {
         "typecheck": "yarn tsc --noEmit",

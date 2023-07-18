@@ -1,13 +1,29 @@
 {
     "name": "@rawr-multicall/no-side-effect-call",
     "version": "1.0.0",
+    "description": "Powerful, type-safe alternative to Multicall for off-chain smart contract query",
+    "keywords": [
+        "rawr-multicall",
+        "multicall",
+        "smart contract",
+        "offchain",
+        "solidity",
+        "yul",
+        "typescript"
+    ],
+    "homepage": "https://github.com/quangloc99/rawr-multicall",
+    "bugs": "https://github.com/quangloc99/rawr-multicall/issues",
+    "author": "Tran Quang Loc <quangloctran99@gmail.com>",
+    "license": "MIT",
     "packageManager": "yarn@3.3.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
         "dist",
         "src",
-        "README.md"
+        "contracts",
+        "README.md",
+        "LICENSE"
     ],
     "devDependencies": {
         "@rawr-multicall/ethers-v6-helper": "workspace:^",
@@ -32,7 +48,8 @@
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
         "test": "yarn jest",
-        "compile-contracts": "solc --standard-json ./solc-standard-json-input.json > ./src/generated/contracts/CallThenRevert.json"
+        "compile-contracts": "solc --standard-json ./solc-standard-json-input.json > ./src/generated/contracts/CallThenRevert.json",
+        "prepack": "yarn build"
     },
     "dependencies": {
         "@rawr-multicall/core": "workspace:^"
