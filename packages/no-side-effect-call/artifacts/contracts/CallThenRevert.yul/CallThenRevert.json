@@ -1,9 +1,14 @@
 {
-  "_format": "hh-sol-artifact-1",
-  "contractName": "CallThenRevert",
-  "sourceName": "contracts/CallThenRevert.yul",
-  "abi": [],
-  "bytecode": "0x603780600a5f395ff3fe5f368180378051819081903660171901906018903490604081901c6001600160a01b03169060e01cf181523d9060203e60013d01601ffd",
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+    "contracts": {
+        "CallThenRevert.yul": {
+            "CallThenRevert": {
+                "evm": {
+                    "bytecode": {
+                        "object": "603880600c6000396000f3fe6000368180378051819081903660171901906018903490604081901c6001600160a01b03169060e01cf181523d9060203e60013d01601ffd"
+                    }
+                }
+            }
+        }
+    },
+    "errors": []
 }

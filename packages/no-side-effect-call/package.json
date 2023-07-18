@@ -32,7 +32,7 @@
         "lint:nofix": "yarn eslint \"{src,test}/**/*.{ts,js}\" --quiet",
         "lint": "yarn lint:nofix --fix",
         "test": "yarn jest",
-        "compile-contracts": "yarn hardhat compile"
+        "compile-contracts": "❯ solc --standard-json ./solc-standard-json-input.json > ./artifacts/contracts/CallThenRevert.yul/CallThenRevert.json"
     },
     "dependencies": {
         "@raw-multicall/core": "workspace:^"
