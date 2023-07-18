@@ -1,10 +1,10 @@
-import { Bytes, RawMulticallError } from '@raw-multicall/core';
+import { Bytes, RawMulticallError, bytesToHexWith0x } from '@raw-multicall/core';
 import { ErrorFragment } from 'ethers';
 
 export class NoFragmentFoundError extends RawMulticallError {
     constructor(
         readonly data: Bytes,
-        message: string = `No error fragment found for reverted data "${data.toString()}"`,
+        message: string = `No error fragment found for reverted data "${bytesToHexWith0x(data)}"`,
         options?: ErrorOptions
     ) {
         super(message, options);
