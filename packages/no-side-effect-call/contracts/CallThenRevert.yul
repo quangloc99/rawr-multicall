@@ -17,15 +17,15 @@ object "CallThenRevert" {
             let gasAndAddressWord := mload(0)
 
             let gasLimit := shr(
-                gasAndAddressWord,
-                mul(sub(32, gasLimitSize()), 8)
+                mul(sub(32, gasLimitSize()), 8),
+                gasAndAddressWord
             )
-            let contractAddress := shl(
-                shr(
-                    gasAndAddressWord,
-                    mul(gasLimitSize(), 8)
-                ),
-                mul(sub(32, contractAddressSize()), 8)
+            let contractAddress := shr(
+                mul(sub(32, contractAddressSize()), 8),
+                shl(
+                    mul(gasLimitSize(), 8),
+                    gasAndAddressWord
+                )
             )
             let success := call(
                 gasLimit,
@@ -36,7 +36,8 @@ object "CallThenRevert" {
                 0, // dest offset
                 0 // dest size
             )
-            mstore(success, 0)
+            mstore(0, success)
+            // put this right after the success byte
             returndatacopy(
                 32,
                 0,
@@ -47,7 +48,6 @@ object "CallThenRevert" {
                 sub(32, 1),
                 add(returndatasize(), 1)
             )
-
         }
     }
 }

@@ -87,11 +87,12 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
         contractAddress: call.getContractAddress(context),
         gasLimit: call.getGasLimit(context),
         value: call.getValue(context),
+        dependentLabeledContract: call.getDependentLabeledContract?.(context) ?? [],
     }));
     const uniqueLabels = Array.from(
         new Set(
-            callsData.flatMap(({ contractAddress }) =>
-                contractAddress.type == 'labeled' ? [contractAddress.label] : []
+            callsData.flatMap(({ contractAddress, dependentLabeledContract }) =>
+                dependentLabeledContract.concat(contractAddress.type == 'labeled' ? [contractAddress.label] : [])
             )
         )
     );

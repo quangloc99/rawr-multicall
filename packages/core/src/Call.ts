@@ -1,5 +1,5 @@
 import { Bytes, toBytes, bytesToHexWith0x } from './Bytes';
-import { Address, castToAddress, AddressOrRawAddress } from './Address';
+import { Address, castToAddress, AddressOrRawAddress, LabeledAddress } from './Address';
 import { type Result } from './Result';
 import { BuildRawMulticallContext } from './BuildRawMulticallContext';
 
@@ -8,6 +8,7 @@ export type Call<ResultType, ErrorType> = {
     getData(context: BuildRawMulticallContext): Bytes;
     getValue(context: BuildRawMulticallContext): number;
     getGasLimit(context: BuildRawMulticallContext): number | undefined;
+    getDependentLabeledContract?: (context: BuildRawMulticallContext) => LabeledAddress['label'][];
 
     decodeOutput(success: boolean, data: Bytes): Result<ResultType, ErrorType>;
 };

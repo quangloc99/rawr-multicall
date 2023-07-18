@@ -10,6 +10,7 @@
         "README.md"
     ],
     "devDependencies": {
+        "@raw-multicall/ethers-v6-helper": "workspace:^",
         "@raw-multicall/test-helper": "workspace:*",
         "@tovarishfin/hardhat-yul": "^3.0.5",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
