@@ -123,3 +123,6 @@ build/
 
 # hardhat cache
 cache/
+
+# Top level file
+test.ts

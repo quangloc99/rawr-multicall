@@ -17,6 +17,7 @@
         "eslint-plugin-prettier": "^5.0.0",
         "eslint-plugin-unused-imports": "^3.0.0",
         "ethers": "^6.6.2",
+        "ethers-v5": "npm:ethers@^5.7.0",
         "hardhat": "^2.16.1",
         "jest": "^29.4.1",
         "prettier": "^3.0.0",
