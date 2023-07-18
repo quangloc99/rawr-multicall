@@ -21,9 +21,21 @@ export function describeForChain(
     }
 }
 
+export const strip0x = (byteCode: string) => (byteCode.startsWith('0x') ? byteCode.slice(2) : byteCode);
+export const hexStringContains = (byteCode: string, substr: string) => strip0x(byteCode).includes(strip0x(substr));
+
 expect.addSnapshotSerializer({
     // eslint-disable-next-line
     test: (arg) => typeof arg == 'object' && arg?.constructor?.name === 'Bytes',
     // eslint-disable-next-line
     serialize: (arg: unknown) => JSON.stringify((arg as any).toString()),
+});
+
+expect.addSnapshotSerializer({
+    test: (arg) => arg instanceof Uint8Array,
+    // eslint-disable-next-line
+    serialize: (arg: unknown) =>
+        `Uint8Array:0x${Array.from(arg as Uint8Array)
+            .map((elm) => elm.toString(16).padStart(2, '0'))
+            .join('')}`,
 });

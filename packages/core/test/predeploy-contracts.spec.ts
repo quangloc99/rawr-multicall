@@ -1,4 +1,4 @@
-import { describeForChain, CHAIN_ID_MAPPING } from '@raw-multicall/test-helper';
+import { describeForChain, CHAIN_ID_MAPPING, hexStringContains } from '@raw-multicall/test-helper';
 import { ethers } from 'ethers';
 import {
     APlusB__factory,
@@ -51,7 +51,7 @@ describeForChain(
             expect(callData).toMatchSnapshot();
             const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
-            expect(callData.byteCode.includes(testContract)).toBeTruthy();
+            expect(hexStringContains(callData.byteCode, testContract)).toBeTruthy();
             const result = decodeResult(calls, res);
             expect(result).toMatchSnapshot();
             expect(APlusBIface.decodeFunctionResult('plus', unwrap(result[0]))).toMatchSnapshot();
@@ -114,7 +114,7 @@ describeForChain(
                 allowPUSH0,
             });
             expect(callData).toMatchSnapshot();
-            expect(callData.byteCode.includes(myContract)).toBeTruthy();
+            expect(hexStringContains(callData.byteCode, myContract)).toBeTruthy();
             const res = await provider.call({ data: callData.byteCode.toString() });
             expect(res).toMatchSnapshot();
             const result = decodeResult(calls, res);
@@ -130,11 +130,11 @@ describeForChain(
             const calldata1 = buildRawMulticallContract([createCall(labeledAddress('a-plus-b'), '0x')]);
             const calldata2 = buildRawMulticallContract([createCall(labeledAddress('test-contract'), '0x')]);
 
-            expect(calldata1.byteCode.includes(aPlusB)).toBeTruthy();
-            expect(calldata1.byteCode.includes(testContract)).toBeFalsy();
+            expect(hexStringContains(calldata1.byteCode, aPlusB)).toBeTruthy();
+            expect(hexStringContains(calldata1.byteCode, testContract)).toBeFalsy();
 
-            expect(calldata2.byteCode.includes(aPlusB)).toBeFalsy();
-            expect(calldata2.byteCode.includes(testContract)).toBeTruthy();
+            expect(hexStringContains(calldata2.byteCode, aPlusB)).toBeFalsy();
+            expect(hexStringContains(calldata2.byteCode, testContract)).toBeTruthy();
         });
 
         it('throw error', async () => {

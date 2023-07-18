@@ -1,17 +1,22 @@
 import { Call } from './Call';
-import { Bytes } from './Bytes';
+import { Bytes, toBytes } from './Bytes';
 import * as ins from './instructions';
 import { buildContract, InstructionContextParams } from './buildContract';
 import { SIGN_BIT, LENGTH_SHIFT, LENGTH_SIZE_bytes, FREE_MEMORY_START, WORD_SIZE_bytes } from './constants';
 import { CalldataJoiner, groupedCalldataJoiner } from './CalldataJoiner';
 import { prefixSum, zip } from './util';
 import { assertDefined, NoPredeployContractError } from './errors';
-import { Address, LabeledAddress } from './Address';
+import { Address, LabeledAddress, RawAddressString } from './Address';
 import { registeredPredeployContracts } from './registerPredeployContract';
+// import { generateAddress, generateAddress2 } from '@ethereumjs/util';
 
 export type BuildRawMulticallContractParams = InstructionContextParams & {
     calldataJoiner?: CalldataJoiner;
     predeployContracts?: Partial<Record<LabeledAddress['label'], Bytes | string>>;
+    tx?: {
+        from?: RawAddressString;
+        nonce?: number;
+    };
 };
 
 export function buildRawMulticallContract<Calls extends readonly Call<unknown, unknown>[]>(
@@ -34,7 +39,7 @@ export function buildRawMulticallInstructions<Calls extends readonly Call<unknow
     const instructions: ins.Instruction[] = [];
 
     const lookupPredeployContract = (label: LabeledAddress['label']) =>
-        Bytes.from(
+        toBytes(
             assertDefined(
                 predeployContracts[label] ?? registeredPredeployContracts[label],
                 () => new NoPredeployContractError(label)

@@ -1,4 +1,4 @@
-import { Bytes } from './Bytes';
+import { Bytes, concatBytes, bytesToHex } from './Bytes';
 
 export type JoinedCalldata = {
     result: Bytes;
@@ -15,7 +15,7 @@ export type CalldataJoiner = {
 
 export const basicCalldataJoiner = {
     join(data: Bytes[]) {
-        const result = Bytes.concat(data);
+        const result = concatBytes(data);
         const parts: JoinedCalldata['parts'] = [];
         let currentOffset = 0;
         for (const [id, d] of data.entries()) {
@@ -32,9 +32,10 @@ export const groupedCalldataJoiner: CalldataJoiner = {
         const dataGroup = new Map<string, { group: number[]; bytes: Bytes }>();
         for (let i = 0; i < data.length; ++i) {
             const d = data[i];
-            let g = dataGroup.get(d.data);
+            const hex = bytesToHex(d);
+            let g = dataGroup.get(hex);
             if (g == undefined) {
-                dataGroup.set(d.data, (g = { group: [], bytes: d }));
+                dataGroup.set(hex, (g = { group: [], bytes: d }));
             }
             g.group.push(i);
         }
@@ -52,6 +53,6 @@ export const groupedCalldataJoiner: CalldataJoiner = {
             }
             currentOffset += size;
         }
-        return { result: Bytes.concat(compressedData), parts };
+        return { result: concatBytes(compressedData), parts };
     },
 };

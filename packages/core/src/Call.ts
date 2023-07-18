@@ -1,4 +1,4 @@
-import { Bytes } from './Bytes';
+import { Bytes, toBytes, bytesToHexWith0x } from './Bytes';
 import { Address, castToAddress, AddressOrRawAddress } from './Address';
 import { type Result } from './Result';
 
@@ -53,10 +53,10 @@ export function createCall(
 ): Call<string, string> {
     return {
         getContractAddress: () => castToAddress(contractAddress),
-        getData: () => Bytes.from(data),
+        getData: () => toBytes(data),
         ...wrapDecodeOutput({
-            decodeResult: (data) => data.toString(),
-            decodeError: (data) => data.toString(),
+            decodeResult: (data) => bytesToHexWith0x(data),
+            decodeError: (data) => bytesToHexWith0x(data),
         }),
         ...wrapCallParams(params),
     };

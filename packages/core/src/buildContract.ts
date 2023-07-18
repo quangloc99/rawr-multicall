@@ -1,5 +1,5 @@
 import { InstructionContext, PreprocessingInstructionContext } from './InstructionContext';
-import { Bytes } from './Bytes';
+import { Bytes, concatBytes, bytesToHexWith0x } from './Bytes';
 import { assert, assertDefined } from './errors';
 import * as ins from './instructions';
 
@@ -15,7 +15,7 @@ export function buildContract(
     params?: InstructionContextParams
 ): {
     splittedByteCodes: Bytes[];
-    byteCode: Bytes;
+    byteCode: string;
 } {
     const { labelSize = DEFAULT_LABEL_SIZE, allowPUSH0 = false } = params ?? {};
     const labelPosition = new Map<string, number>();
@@ -52,7 +52,7 @@ export function buildContract(
         splittedByteCodes.push(instruction.generate(instructionContext));
     }
 
-    const byteCode = Bytes.concat(splittedByteCodes);
+    const byteCode = bytesToHexWith0x(concatBytes(splittedByteCodes));
     return {
         splittedByteCodes,
         byteCode,

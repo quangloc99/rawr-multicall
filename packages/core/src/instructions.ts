@@ -1,5 +1,5 @@
 import { InstructionContext, PreprocessingInstructionContext } from './InstructionContext';
-import { Bytes } from './Bytes';
+import { Bytes, byte, concatBytes, hexToBytes, numberToBytes, toBytes, EMPTY_BYTES } from './Bytes';
 import { assert } from './errors';
 
 export interface Instruction {
@@ -11,14 +11,14 @@ export interface Instruction {
 export function singleByteInstruction(code: number): Instruction {
     return {
         byteSize: () => 1,
-        generate: () => Bytes.byte(code),
+        generate: () => byte(code),
     };
 }
 
 export function joinInstructions(...instructions: Instruction[]): Instruction {
     return {
         byteSize: (context) => instructions.map((ins) => ins.byteSize(context)).reduce((a, b) => a + b),
-        generate: (context) => Bytes.concat(instructions.map((ins) => ins.generate(context))),
+        generate: (context) => concatBytes(instructions.map((ins) => ins.generate(context))),
     };
 }
 
@@ -50,24 +50,24 @@ export function PUSH(bytes: Bytes, byteSize: number = bytes.length): Instruction
     assert(1 <= byteSize && byteSize <= 32);
     return {
         byteSize: () => byteSize + 1,
-        generate: () => Bytes.concat(Bytes.byte(0x60 + byteSize - 1), bytes),
+        generate: () => concatBytes([byte(0x60 + byteSize - 1), bytes]),
     };
 }
 
 export const PUSH0: Instruction = {
     byteSize: (context) => (context.allowPUSH0() ? 1 : 2),
-    generate: (context) => (context.allowPUSH0() ? Bytes.byte(0x5f) : new Bytes('6000')),
+    generate: (context) => (context.allowPUSH0() ? byte(0x5f) : hexToBytes('6000')),
 };
 
 export function PUSH_NUMBER(num: number): Instruction {
     if (num == 0) return PUSH0;
-    const bytes = Bytes.fromNumber(num);
+    const bytes = numberToBytes(num);
     const res = PUSH(bytes);
     return res;
 }
 
 export const PUSH_ADDRESS = (address: Bytes | string) => {
-    if (typeof address == 'string') address = new Bytes(address);
+    address = toBytes(address);
     assert(address.length == 20, 'Address must be a byte sequence of length 20');
     return PUSH(address);
 };
@@ -82,7 +82,7 @@ export function LABEL(
     return {
         register: (context) => context.addLabel(labelName),
         byteSize: () => (isEmpty ? 0 : 1),
-        generate: () => (isEmpty ? Bytes.EMPTY : Bytes.byte(0x5b)),
+        generate: () => (isEmpty ? EMPTY_BYTES : byte(0x5b)),
     };
 }
 
@@ -98,7 +98,7 @@ export function PUSH_LABEL(
         byteSize: (context) => 1 + context.getLabelSize(),
         generate: (context) => {
             const labelSize = context.getLabelSize();
-            return PUSH(Bytes.fromNumber(context.getPos(labelName) + offset, labelSize)).generate(context);
+            return PUSH(numberToBytes(context.getPos(labelName) + offset, labelSize)).generate(context);
         },
     };
 }

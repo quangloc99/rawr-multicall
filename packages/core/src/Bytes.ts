@@ -1,93 +1,66 @@
-import { toHex } from './util';
+import { bytesToHex, hexToBytes } from 'ethereum-cryptography/utils';
 import { assert } from './errors';
+import { toHex } from './util';
+export { hexToBytes, utf8ToBytes, equalsBytes, bytesToHex } from 'ethereum-cryptography/utils';
+
+export type Bytes = Uint8Array;
+
+export const EMPTY_BYTES = new Uint8Array([]);
+
+export function toBytes(value: string | Bytes): Bytes {
+    if (typeof value === 'string') return hexToBytes(value);
+    return value;
+}
+
+export function bytesToHexWith0x(bytes: Bytes) {
+    return `0x${bytesToHex(bytes)}`;
+}
+
+export function byte(num: number): Bytes {
+    return new Uint8Array([num]);
+}
+
+export function numberToBytes(num: number, byteSize?: number): Bytes {
+    return hexToBytes(toHex(num, byteSize));
+}
+
+/**
+ * Reimplement concatBytes instead of the one from ethereum-cryptography
+ * because of the spread operator limit.
+ */
+export function concatBytes(arrays: Uint8Array[]): Uint8Array {
+    const r = new Uint8Array(arrays.reduce((sum, a) => sum + a.length, 0));
+    let pad = 0;
+    for (const a of arrays) {
+        r.set(a, pad);
+        pad += a.length;
+    }
+    return r;
+}
+
+export function bytesToNumber(bytes: Bytes): number {
+    let res = 0;
+    for (const elm of bytes) {
+        // we don't use bit-shifting as it will wrap the number around a SIGNED 32-bit integer
+        res = res * 256 + elm;
+    }
+    return res;
+}
 
 export type ByteStream = {
     hasMore(): boolean;
     next(byteSize: number): Bytes;
 };
 
-export class Bytes {
-    readonly data: string;
-    constructor(hexString: string) {
-        if (hexString.startsWith('0x')) hexString = hexString.slice(2);
-        assert(hexString.length % 2 == 0, 'hex string must have even size');
-        this.data = hexString.toLowerCase();
-    }
-
-    static EMPTY = new Bytes('');
-
-    static from(hexString: string): Bytes;
-    static from(bytes: Bytes): Bytes;
-    static from(params: string | Bytes): Bytes;
-    static from(params: string | Bytes): Bytes {
-        if (typeof params == 'string') return new Bytes(params);
-        return params;
-    }
-
-    static byte(value: number): Bytes {
-        assert(0 <= value && value < 256);
-        return new Bytes(toHex(value, 1));
-    }
-
-    static fromNumber(value: number, byteSize?: number): Bytes {
-        return new Bytes(toHex(value, byteSize));
-    }
-
-    static concat(...params: Bytes[] | [Bytes[]]) {
-        return new Bytes(
-            params
-                .flat()
-                .map(({ data }) => data)
-                .join('')
-        );
-    }
-
-    byteValue(pos: number): number {
-        assert(
-            0 <= pos && pos < this.length,
-            () =>
-                new RangeError('byte position should be a positive integer less than the length of this byte sequence')
-        );
-        pos *= 2;
-        return parseInt(this.data.slice(pos, pos + 2), 16);
-    }
-
-    get length() {
-        return this.data.length >>> 1;
-    }
-
-    add0x(): string {
-        return `0x${this.data}`;
-    }
-
-    toString(): string {
-        return this.add0x();
-    }
-
-    slice(startByteIndex: number, endByteIndex?: number): Bytes {
-        const start = startByteIndex * 2;
-        const end = endByteIndex ? endByteIndex * 2 : this.data.length;
-        return new Bytes(this.data.slice(start, end));
-    }
-
-    createStream() {
-        let currentPos = 0; // not in bytes, but in character
-        return {
-            get currentPos() {
-                return currentPos;
-            },
-            hasMore: () => currentPos < this.length,
-            next: (len: number): Bytes => {
-                assert(currentPos + len <= this.length);
-                const oldPos = currentPos;
-                currentPos += len;
-                return this.slice(oldPos, currentPos);
-            },
-        };
-    }
-
-    includes(bytes: Bytes | string): boolean {
-        const normalizedBytes = Bytes.from(bytes).data;
-        return this.data.includes(normalizedBytes);
-    }
+export function createByteStream(bytes: Bytes): ByteStream {
+    let currentPos: number = 0;
+    return {
+        hasMore: () => currentPos < bytes.length,
+        next: (byteSize: number) => {
+            assert(byteSize + currentPos <= bytes.length);
+            const oldPos = currentPos;
+            currentPos += byteSize;
+            return bytes.slice(oldPos, currentPos);
+        },
+    };
 }
