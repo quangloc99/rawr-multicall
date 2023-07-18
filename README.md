@@ -554,6 +554,11 @@ buildRawrMulticallContract(calls, params: {
 });
 ```
 
+## The name
+
+Originally I named it `raw-multicall`. But then I remembered [this
+meme](https://www.youtube.com/watch?v=rlkSMp7iz6c&t=0s).
+
 [Counter-contract]: ./packages/test-helper/test-contracts/Counter.sol
 [Rawr-multicall]: https://github.com/quangloc99/rawr-multicall
 [Multicall3]: https://github.com/mds1/multicall
