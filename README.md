@@ -31,7 +31,24 @@ With builtin plugins come more features:
 
 ## Installation
 
-> TODO
+Core package installation
+
+```console
+npm install @rawr-multicall/core
+# or 
+yarn add @rawr-multicall/core
+```
+
+Plugin installation
+
+```console
+npm install @rawr-multicall/ethers-v5-helper @rawr-multicall/ethers-v6-helper @rawr-multicall/no-side-effect-call
+# or 
+yarn add @rawr-multicall/ethers-v5-helper @rawr-multicall/ethers-v6-helper @rawr-multicall/no-side-effect-call
+```
+
+Note that `ethers-v5-helper` or `ethers-v6-helper` should be installed based on your requirement, as they used
+different [Ethers.js] version.
 
 ## Usage
 
